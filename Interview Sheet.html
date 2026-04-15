@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAP FI/CO Interview Dashboard — IBM BBSI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;background:#f0f2f5;color:#1a1a2e}
+a{color:inherit}
+.page{max-width:1200px;margin:0 auto;padding:1.5rem}
+/* HEADER */
+.hdr{background:#1a1a2e;color:#fff;padding:1.25rem 1.5rem;border-radius:10px;margin-bottom:1.25rem}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem}
+.hdr-title{font-size:18px;font-weight:600;letter-spacing:-.2px}
+.hdr-sub{font-size:11px;color:#8b9dc3;margin-top:2px}
+.hdr-badge{font-size:10px;padding:3px 10px;border-radius:20px;background:#2d3a6b;color:#a0b4f0;font-weight:500}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.meta-field label{font-size:10px;color:#8b9dc3;font-weight:500;display:block;margin-bottom:3px}
+.meta-field input,.meta-field select{width:100%;background:#0d1117;border:1px solid #2d3a6b;color:#e8eaf6;border-radius:6px;padding:5px 8px;font-size:12px}
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{padding:8px 18px;border:1.5px solid #c7d2fe;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#4338ca;transition:all .15s}
+.tab.active{background:#4338ca;color:#fff;border-color:#4338ca}
+/* LEGEND */
+.legend{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.legend-lbl{font-size:11px;font-weight:600;color:#475569;margin-right:4px}
+.rp{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.r1{background:#dcfce7;color:#166534}.r2{background:#dbeafe;color:#1e40af}.r3{background:#fef9c3;color:#854d0e}
+.r4{background:#fee2e2;color:#991b1b}.r5{background:#f3e8ff;color:#6b21a8}.r6{background:#f1f5f9;color:#475569}
+/* SCORES */
+.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.25rem}
+.sc{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;text-align:center}
+.sc-lbl{font-size:10px;color:#64748b;font-weight:500;margin-bottom:4px}
+.sc-val{font-size:22px;font-weight:700;color:#1a1a2e}
+.sc-sub{font-size:10px;color:#94a3b8;margin-top:2px}
+/* SECTIONS */
+.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:1rem;overflow:hidden}
+.sec-hdr{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none;border-bottom:1px solid #f1f5f9}
+.sec-hdr:hover{background:#fafbff}
+.sec-tag{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.tag-fi{background:#dbeafe;color:#1e40af}
+.tag-co{background:#dcfce7;color:#166534}
+.tag-both{background:#f3e8ff;color:#6b21a8}
+.tag-tech{background:#fef3c7;color:#92400e}
+.tag-proc{background:#ffe4e6;color:#9f1239}
+.tag-soft{background:#f0fdf4;color:#14532d}
+.sec-title{font-size:13px;font-weight:700;color:#1e293b;flex:1}
+.sec-ref{font-size:10px;color:#94a3b8;margin-left:auto}
+.sec-chevron{font-size:12px;color:#94a3b8;transition:transform .2s}
+.sec-chevron.open{transform:rotate(180deg)}
+.sec-body{padding:14px 16px;display:none;border-top:1px solid #f1f5f9}
+.sec-body.open{display:block}
+/* QUESTION CARD */
+.qcard{border:1px solid #e2e8f0;border-radius:8px;margin-bottom:12px;overflow:hidden}
+.qcard:last-child{margin-bottom:0}
+.qcard-hdr{padding:10px 14px;background:#fafbff;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;gap:10px}
+.q-badge{font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.4px;white-space:nowrap;margin-top:1px}
+.intro-badge{background:#dbeafe;color:#1e40af}
+.adv-badge{background:#fde8d8;color:#9a3412}
+.behav-badge{background:#f0fdf4;color:#166534}
+.qnum{font-size:10px;color:#94a3b8;font-weight:600;min-width:22px}
+.qtext{font-size:13px;color:#1e293b;line-height:1.6;font-weight:500;flex:1}
+.qcard-body{padding:12px 14px}
+/* KEYWORDS */
+.kw-section{margin-bottom:10px}
+.kw-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kw-label::after{content:'';flex:1;height:1px;background:#f1f5f9}
+.kw-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.kw{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#fef9c3;color:#713f12;border:1px solid #fde68a}
+/* ANSWER */
+.ans-section{margin-bottom:10px}
+.ans-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ans-label::after{content:'';flex:1;height:1px;background:#f1f5f9}
+.ans-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px;font-size:12px;color:#334155;line-height:1.75;white-space:pre-wrap}
+.ans-box strong{color:#1e293b;font-weight:700}
+/* RATING */
+.rating-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.r-label{font-size:10px;font-weight:600;color:#64748b;margin-right:4px}
+.rb{width:30px;height:30px;border-radius:50%;border:1.5px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;color:#475569;display:flex;align-items:center;justify-content:center}
+.rb:hover{transform:scale(1.1)}
+.rb.sel-1{background:#166534;color:#fff;border-color:#166534}
+.rb.sel-2{background:#1e40af;color:#fff;border-color:#1e40af}
+.rb.sel-3{background:#854d0e;color:#fff;border-color:#854d0e}
+.rb.sel-4{background:#991b1b;color:#fff;border-color:#991b1b}
+.rb.sel-5{background:#6b21a8;color:#fff;border-color:#6b21a8}
+.rb.sel-6{background:#475569;color:#fff;border-color:#475569}
+.r-selected-label{font-size:11px;font-weight:600;margin-left:6px}
+.qnotes{width:100%;margin-top:6px;font-size:12px;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;background:#fafbff;color:#1e293b;resize:vertical;min-height:44px;font-family:inherit}
+/* FINAL RATING */
+.final-section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:1rem}
+.final-title{font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9}
+.final-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.final-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.final-row label{font-size:12px;font-weight:600;color:#475569;min-width:150px}
+.final-check{display:flex;align-items:center;gap:5px;font-size:12px;color:#334155}
+.final-check input{width:14px;height:14px;accent-color:#4338ca}
+.overall-notes{width:100%;font-size:12px;padding:8px;border:1px solid #e2e8f0;border-radius:6px;background:#fafbff;min-height:80px;resize:vertical;font-family:inherit}
+/* GUIDANCE */
+.guidance-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:12px;color:#334155;line-height:1.8;white-space:pre-wrap;max-height:400px;overflow-y:auto;font-family:'Courier New',monospace}
+/* ACTIONS */
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.btn{padding:8px 18px;border-radius:8px;border:1.5px solid #c7d2fe;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#4338ca;transition:all .15s}
+.btn:hover{background:#eef2ff}
+.btn-primary{background:#4338ca;color:#fff;border-color:#4338ca}
+.btn-primary:hover{background:#3730a3}
+.btn-success{background:#166534;color:#fff;border-color:#166534}
+.btn-success:hover{background:#14532d}
+.btn-danger{background:#fff;color:#991b1b;border-color:#fca5a5}
+.btn-danger:hover{background:#fff1f2}
+/* MISC */
+.divider{height:1px;background:#f1f5f9;margin:10px 0}
+.skip-btn{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer;color:#64748b;font-weight:500}
+.skip-btn.active{background:#f1f5f9;color:#475569;border-color:#94a3b8}
+.skipped-tag{font-size:10px;padding:1px 7px;border-radius:20px;background:#f1f5f9;color:#475569;font-weight:500}
+.overall-notes-wrap{margin-bottom:12px}
+.overall-notes-wrap label{font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px}
+@media print{
+  .tabs,.actions{display:none}
+  .sec-body{display:block!important}
+  .qnotes{display:none}
+  body{background:#fff}
+  .section,.sc,.final-section{border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">SAP FI/CO Interview Dashboard</div>
+      <div class="hdr-sub">IBM BBSI — Behaviour-Based Structured Interview &nbsp;|&nbsp; Domain + Functional + Process Knowledge Evaluation</div>
+    </div>
+    <span class="hdr-badge">Ver 4.0 &nbsp;|&nbsp; All BBSI Segments</span>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-field"><label>Candidate Name</label><input id="mName" type="text" placeholder="Enter name"></div>
+    <div class="meta-field"><label>Role Suitable For</label>
+      <select id="mRole">
+        <option>SAP FI/CO Consultant</option>
+        <option>SAP FI/CO Fasttrak</option>
+        <option>Project Manager</option>
+      </select>
+    </div>
+    <div class="meta-field"><label>Skill Category</label>
+      <select id="mCat">
+        <option>Domain</option>
+        <option>Domain Certified</option>
+        <option>Lateral</option>
+        <option>Vitality</option>
+      </select>
+    </div>
+    <div class="meta-field"><label>Mode of Interview</label>
+      <select id="mMode">
+        <option>Face to Face</option>
+        <option>Telephonic — Candidate at IBM location</option>
+        <option>Telephonic — Candidate NOT at IBM location</option>
+      </select>
+    </div>
+    <div class="meta-field"><label>Interviewer Name</label><input id="mInterviewer" type="text" placeholder="Your name"></div>
+    <div class="meta-field"><label>Employee ID</label><input id="mEmpId" type="text" placeholder="EMP-XXXXX"></div>
+    <div class="meta-field"><label>Date</label><input id="mDate" type="date"></div>
+    <div class="meta-field"><label>SAP Experience (Years)</label><input id="mYears" type="number" placeholder="e.g. 5" min="0" max="40"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-tpl="fi">FI-Heavy</button>
+  <button class="tab" data-tpl="co">CO-Heavy</button>
+  <button class="tab" data-tpl="balanced">FICO-Balanced</button>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="legend-lbl">IBM BBSI Ratings:</span>
+  <span class="rp r1">1 — Outstanding</span>
+  <span class="rp r2">2 — Above Average</span>
+  <span class="rp r3">3 — Acceptable</span>
+  <span class="rp r4">4 — Unacceptable</span>
+  <span class="rp r5">5 — Not Worked</span>
+  <span class="rp r6">6 — Not Evaluated</span>
+</div>
+
+<!-- SCORES -->
+<div class="scores">
+  <div class="sc"><div class="sc-lbl">Questions Rated</div><div class="sc-val" id="sAsked">0</div><div class="sc-sub" id="sTotal">of 0</div></div>
+  <div class="sc"><div class="sc-lbl">Overall Avg</div><div class="sc-val" id="sAvg">—</div><div class="sc-sub" id="sAvgLbl">—</div></div>
+  <div class="sc"><div class="sc-lbl">FI Domain Avg</div><div class="sc-val" id="sFI">—</div><div class="sc-sub">FI segments</div></div>
+  <div class="sc"><div class="sc-lbl">CO Domain Avg</div><div class="sc-val" id="sCO">—</div><div class="sc-sub">CO segments</div></div>
+  <div class="sc"><div class="sc-lbl">Technical Avg</div><div class="sc-val" id="sTech">—</div><div class="sc-sub">Tech + Process</div></div>
+</div>
+
+<!-- QUESTION SECTIONS -->
+<div id="sections"></div>
+
+<!-- FINAL RATING -->
+<div class="final-section" id="finalSection">
+  <div class="final-title">Final Technical Rating (IBM BBSI)</div>
+  <div class="overall-notes-wrap">
+    <label>Overall Interviewer Observations</label>
+    <textarea class="overall-notes" id="overallNotes" placeholder="Document key observations, strengths, red flags, fit for role..."></textarea>
+  </div>
+  <div class="final-row">
+    <label>Recommendation:</label>
+    <label class="final-check"><input type="radio" name="rec" value="acceptable"> Acceptable — Overall Rating:</label>
+    <select id="overallRating" style="font-size:12px;padding:3px 6px;border:1px solid #e2e8f0;border-radius:6px">
+      <option value="">Select</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+    </select>
+    <label class="final-check" style="margin-left:10px"><input type="radio" name="rec" value="not_accepted"> Not Accepted</label>
+  </div>
+  <div class="final-row">
+    <label>Recommended For:</label>
+    <label class="final-check"><input type="checkbox" id="recConsulting"> Consulting Engagements</label>
+    <label class="final-check" style="margin-left:10px"><input type="checkbox" id="recSupport"> Support Engagements</label>
+    <label class="final-check" style="margin-left:10px"><input type="checkbox" id="recBoth"> Both</label>
+  </div>
+  <div class="final-row">
+    <label>Rejection Reason (if applicable):</label>
+    <label class="final-check"><input type="radio" name="rej" value="later"> Consider Later</label>
+    <label class="final-check" style="margin-left:10px"><input type="radio" name="rej" value="12mo"> Unacceptable — Do Not Offer for 12 Months</label>
+    <label class="final-check" style="margin-left:10px"><input type="radio" name="rej" value="never"> Do Not Offer at IBM</label>
+  </div>
+  <div class="divider"></div>
+  <div style="margin-top:10px">
+    <div class="ans-label" style="margin-bottom:8px">BBSI Assessment Summary</div>
+    <div class="guidance-box" id="guidanceBox">Rate at least 5 questions and click "Generate BBSI Summary" to produce structured assessment text.</div>
+  </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="btn btn-primary" onclick="generateGuidance()">Generate BBSI Summary</button>
+  <button class="btn btn-success" onclick="exportJSON()">Export JSON</button>
+  <button class="btn" onclick="window.print()">Print / PDF</button>
+  <button class="btn btn-danger" onclick="clearAll()">Clear All Ratings</button>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// QUESTION BANK — All BBSI Segments, Intro + Advanced per segment
+// ═══════════════════════════════════════════════════════════════════
+const QB = {
+
+// ── FINANCIAL ACCOUNTING ──────────────────────────────────────────
+
+gl: {
+  title: "General Ledger",
+  bbsiRef: "Financial Accounting → General Ledger",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the purpose of document splitting in SAP New GL and list the prerequisites required before it can be activated. Have you personally configured it? Walk me through what you did.`,
+      kw:["document splitting","zero-balance clearing account","splitting method","item category","base item category","active splitting","passive splitting","profit centre","segment","FAGL_SPLIT","FAGL_ACTIVATION","splitting rule"],
+      ans:`CONCEPT: Document splitting ensures every financial statement (balance sheet, P&L) is complete and balanced at a sub-entity level — typically profit centre or segment — within a single accounting document, without additional reconciliation runs.
+
+TYPES:
+• Active splitting — SAP splits GL line items (e.g., tax, vendor payable) proportionally across profit centres based on the expense/revenue lines in the same document.
+• Passive splitting — Document inherits the split of an already-split reference document (e.g., clearing a previously split invoice).
+
+PREREQUISITES (config path: SPRO → FI → GL → Business Transactions → Document Splitting):
+1. New GL activated: transaction FAGL_ACTIVATION
+2. Zero-balance clearing account defined (FAGL_ZERO_BAL_ITEM) — mandatory to keep sub-entity balance sheet in balance when splits are uneven
+3. Splitting method assigned to document types (e.g., method 0000000012 = standard)
+4. Item categories assigned to GL accounts (FSP0 or FAGLSPLITCA)
+5. Splitting rules defined per method: which base item category drives split of which target category
+6. Characteristics set as 'mandatory' or 'optional' in controlling area settings
+
+BEHAVIOURAL PROBE: Ask for a specific project where they activated document splitting. A strong candidate will mention the challenges of retroactive activation, testing with existing master data, and handling the zero-balance account in reconciliation.
+
+KEYWORD SIGNAL: If they don't mention zero-balance clearing account spontaneously, probe — it is the single most common misconfiguration in go-lives.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A live S/4HANA 2021 system has document splitting active with profit centre as a mandatory balancing characteristic. A business user posts a vendor invoice (FB60) with three expense line items across two profit centres. System throws: "No splitting rule found for item category 01000 (Vendor) with base item category 20000 (Cost) in splitting method 0000000012." The standard method is assigned to the document type. What are the THREE most likely root causes and the exact navigation path to fix each?`,
+      kw:["item category 01000","splitting method 0000000012","document type assignment","splitting rule","base item category 20000","FSP0","FAGLSPLITCA","zero-balance clearing account","T-code FAGL_SPLIT_CUST","GL account item category assignment"],
+      ans:`This error means SAP found the splitting method but has no rule telling it HOW to split the vendor line (01000) using the expense lines (20000) as a base. Three root causes:
+
+ROOT CAUSE 1 — Splitting rule missing for the item category pair:
+• Path: SPRO → GL → Business Transactions → Document Splitting → Define Splitting Rules → Open method 0000000012 → Business Transaction (e.g., 0300 Vendor Invoice)
+• Check: Is there a rule for "source = 01000, base = 20000"?
+• Fix: Add rule — Source item cat: 01000 (Vendor), Base item cat: 20000 (Cost GL), Method: proportional to base items, Mark as active
+
+ROOT CAUSE 2 — Expense GL account not assigned to a recognised item category:
+• If the three expense lines hit GL accounts not assigned to item category 20000 (or any active base category), SAP has nothing to base the split on
+• Path: FSP0 → Open the GL account → field "Item Category" or use FAGLSPLITCA
+• Fix: Assign item category 20000 (Expense) to each affected GL account. This is frequently missed for newly created GL accounts post go-live
+
+ROOT CAUSE 3 — Document type not assigned to the splitting method:
+• A document type created after initial setup (e.g., a new MIRO variant or intercompany type) may never have been mapped
+• Path: SPRO → Document Splitting → Assign Document Types to Document Splitting → add the document type used in FB60
+• Fix: Map the document type to method 0000000012
+
+SDN REAL-WORLD NOTE: Root causes 2 and 3 are the most frequent in production support — especially after transports bring new GL accounts or document types from development without corresponding splitting config. Always run FAGL_CHECK_CONSISTENCY post-transport to catch these gaps.`
+    }
+  ]
+},
+
+ar: {
+  title: "Accounts Receivable",
+  bbsiRef: "Financial Accounting → Account Receivable",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Describe how you have configured and used the dunning program in SAP AR. Walk through the key configuration objects and a specific business scenario where dunning logic caused an issue.`,
+      kw:["dunning procedure","dunning levels","dunning areas","grace days","minimum amount","dunning charges","F150","dunning block","dunning key","FBMP","customer master"],
+      ans:`CONCEPT: Dunning automates payment reminders to customers for overdue open items, escalating through configured levels.
+
+KEY CONFIG OBJECTS (FBMP):
+• Dunning procedure: defines levels, days overdue per level, minimum amounts, dunning charges, interest calculation
+• Dunning levels: typically 1 (reminder) → 2 (warning) → 3 (final notice) → 4 (legal) — each with a different days-in-arrears threshold
+• Grace days: extra days before an item qualifies for dunning (set at procedure or customer level)
+• Minimum dunning amount: items below this are excluded from dunning notices
+• Dunning charges: optional fee posted per level (requires interest calculation settings)
+
+PROCESS FLOW:
+1. Assign dunning procedure to customer master (FD02, Correspondence tab)
+2. Run F150 (Dunning Program): set dunning date, company code, customer range
+3. System selects overdue items, determines dunning level (highest uncleared level across all items for that customer)
+4. Output dunning letters; optionally post charges
+
+DUNNING BLOCK: Can be set at customer master level (FD02) or line item level (FBL5N) to exclude specific customers/items.
+
+BEHAVIOURAL PROBE: A strong answer includes a real scenario — e.g., "a customer was dunned even though payment was on its way because the clearing hadn't been processed, causing a client complaint — we resolved it by setting a dunning block during the clearing window and then running a correction run."
+
+GOTCHA: Dunning level is set at the CUSTOMER level (highest level of any item) — not per invoice. This trips up candidates who think each invoice is dunned independently.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client uses credit management (FD32). Customer A has a credit limit of USD 100,000. Credit exposure shows USD 85,000. A sales order for USD 20,000 is placed — it gets blocked in VKM1. The credit manager releases it. Next day, an identical order for USD 15,000 is placed — NO credit block, even though the customer is now at USD 105,000. Explain precisely why the second order bypassed the credit check and provide the complete resolution including the specific configuration tables.`,
+      kw:["credit update group","OVA8","risk category","RVKRED77","RVKRED08","open order value","update group 15 vs 12","credit check at order save","VKM1","FD32","credit horizon","KNKK table"],
+      ans:`ROOT CAUSE — Credit Update Group Configuration:
+When the first order was released in VKM1, SAP updated the credit exposure — but the timing of the update depends on the UPDATE GROUP set in OVA8 (credit control risk category configuration).
+
+If update group is set to '12' (update at goods issue) or '18' (update at goods issue + delivery):
+The released first order's USD 20,000 is NOT reflected in real-time credit exposure. When the second order is placed the next day, SAP checks FD32 and sees: Old exposure 85,000 + new order 15,000 = 100,000 = exactly at limit but not OVER limit → no block triggered (boundary condition).
+
+FULL DIAGNOSTIC PATH:
+1. FD32 → Customer → Check "Open orders" field — is the released first order included?
+2. OVA8 → Sales org / Division / Customer risk category → Check "Update" field (column: Credit limit check)
+3. Table KNKK: credit master record — compare CRBLB (credit exposure) to expected value
+
+RESOLUTION:
+1. Change update group in OVA8 to group '15' (update at order creation and goods issue) → released orders update exposure immediately at save
+2. Run RVKRED77 (credit data rebuild) for customer A to recalculate current correct exposure
+3. Alternatively run RVKRED08 (reorganise credit data) if exposure seems corrupted
+4. Set dynamic credit check with horizon (e.g., 90 days) so future orders within horizon count regardless of delivery date
+
+SDN CRITICAL NOTE: This exact issue was a common escalation in SAP ECC communities — "VKM1 release makes the next identical order go through." The resolution is always update group 15 + RVKRED77 rebuild. Without RVKRED77, even after changing the update group, the stale exposure causes the same bypass for existing open orders.`
+    }
+  ]
+},
+
+ap: {
+  title: "Accounts Payable",
+  bbsiRef: "Financial Accounting → Account Payable",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Describe the three-way match process in SAP and explain what happens when a goods receipt and an invoice are outside the defined tolerance. Have you ever had to configure tolerance keys for a client? What was the business requirement?`,
+      kw:["three-way match","GR/IR account","tolerance keys","BD ST PP DQ","invoice verification","MIRO","GR-based IV","blocking reason","MRBR","OMR6","purchase order price variance"],
+      ans:`CONCEPT: Three-way match validates: PO (approved price + quantity) ↔ GR (goods received) ↔ Invoice (vendor charges). All three must align within defined tolerances.
+
+PROCESS FLOW:
+1. PO created (ME21N): price, quantity, account assignment
+2. GR posted (MIGO): debit Stock/Expense, credit GR/IR clearing account (BSX/WRX)
+3. Invoice posted (MIRO): debit GR/IR, credit Vendor; difference goes to price variance account if within tolerance, or blocks if outside
+
+TOLERANCE KEYS (configured in OMR6):
+• BD = Form small differences (absolute tolerance for small value differences — posts to expense account automatically)
+• ST = Percentage OPUn (quantity variance %)
+• PP = Price variance (absolute and %)
+• DQ = Quantity variance when GR qty < invoice qty
+• DW = Quantity variance when GR qty > invoice qty
+• VP = Moving average price variance
+
+BLOCKING LOGIC:
+• If variance exceeds tolerance → invoice automatically blocked
+• Block reasons: 'R' (invoice reduction), 'A' (amount), 'Q' (quantity)
+• Blocked invoices reviewed and released in MRBR
+
+BEHAVIOURAL PROBE: Strong candidates mention configuring different tolerance keys per company code or vendor class, the business pushback when invoices are blocked, and the escalation path when finance wants to override blocks for strategic suppliers.
+
+GOTCHA: GR-based IV (flag on PO line item) controls whether MIRO checks against GR quantities or PO quantities. When GR-based IV is NOT flagged, you can invoice more than received — common audit finding.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client runs F110 (automatic payment) for a vendor who has an open credit memo of INR 50,000 and an invoice of INR 200,000. The payment run log shows no errors and pays INR 200,000 — the credit memo is NOT netted. The credit memo has the same payment method and house bank. What are the FOUR configuration or master data reasons this netting failure occurs, and how do you diagnose each without re-running the payment run?`,
+      kw:["F110","credit memo","payment term","grouping key","separate payment for credit memos","FBZP","payment method assignment","BSEG ZLSCH","due date","payment run log","REGUP table","netting"],
+      ans:`ROOT CAUSE 1 — Credit memo has a different payment method than the invoice:
+• SAP nets items only within the same payment method. If the credit memo was posted with ZLSCH (payment method) = blank or different letter, it won't net.
+• Diagnose: FBL1N → select credit memo → double-click → check field "Payment Method" (BSEG-ZLSCH). Compare to invoice.
+• Fix: Change payment method on the credit memo via FB02 if not cleared.
+
+ROOT CAUSE 2 — Credit memo due date is outside the payment run's "Next Payment Date":
+• Credit memos in SAP can have their own payment terms. If the credit memo is due in 30 days but the payment run is processing "due today", the credit memo is excluded.
+• Diagnose: FBL1N → credit memo → check "Due Date" field. Compare to F110 run's "Next payment run date" parameter.
+• Fix: Change payment terms on the credit memo (FB02) or adjust the payment run's date range.
+
+ROOT CAUSE 3 — Grouping key prevents netting:
+• FBZP → Payment method in company code → "Grouping key" field. If grouping key is set (e.g., group by PO number or reference document), items with different grouping key values are paid separately.
+• Diagnose: Check FBZP → payment method → company code → grouping key field. Check if credit memo reference differs from invoice reference.
+• Fix: Clear the grouping key or ensure credit memo has the same reference as the invoice.
+
+ROOT CAUSE 4 — "Separate payment for credit memos" checkbox is active:
+• FBZP → Payment method → Company code level → field "Separate payment for credit memos" — when ticked, credit memos are always issued as standalone payments (a refund) rather than netted.
+• Diagnose: FBZP → Company code → payment method → check this flag.
+• Fix: Untick the flag after confirming with the finance team (it may be intentional for audit trail reasons).
+
+POST-RUN DIAGNOSTIC: Check table REGUP (F110 payment documents) — filter by run date and vendor. The credit memo will appear with status showing why it was excluded from netting.`
+    }
+  ]
+},
+
+aa: {
+  title: "Asset Accounting",
+  bbsiRef: "Financial Accounting → Asset Accounting",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the concept of depreciation areas in SAP Asset Accounting. Why would a multinational client need multiple areas and how do real vs. derived areas differ? Describe a parallel accounting scenario you have configured.`,
+      kw:["depreciation area","chart of depreciation","parallel accounting","IFRS","local GAAP","real area","derived area","APC values","OADB","OABC","AO90","ledger group assignment","area 01 30 32 15"],
+      ans:`CONCEPT: A depreciation area is a valuation view for an asset — it defines depreciation method, useful life, start convention, and whether values post to GL. Multiple areas allow one asset to have different valuations for different reporting purposes.
+
+COMMON DEPRECIATION AREAS:
+• Area 01: Book depreciation (local GAAP / IND AS / HGB) — always real, always posts to GL
+• Area 15: Tax depreciation — real area, posts to special tax GL accounts
+• Area 20: Cost accounting — real area, for internal management reporting with different useful lives
+• Area 30: IFRS valuation — real area linked to IFRS parallel ledger
+• Area 31/32: Delta area (derived) — calculates the difference between area 01 and area 30 for GAAP reconciliation purposes
+
+REAL vs DERIVED AREAS:
+• Real areas: independently configured with their own APC values, accumulated depreciation, depreciation key, and GL account assignment (AO90). They post independently to GL accounts assigned per area.
+• Derived areas: defined as Area X = Area A minus Area B (e.g., Area 31 = 30 minus 01). Useful for GAAP-IFRS delta posting. Configured in OADB with "identical with" or "derived from" settings.
+
+CONFIG PATH:
+1. OADB — Define/activate depreciation areas in chart of depreciation
+2. OABC — Define depreciation keys per area
+3. AO90 — Assign GL accounts per depreciation area (different accounts for each area in parallel accounting)
+4. S/4HANA: Assign ledger group to depreciation area (leading ledger 0L → area 01, non-leading ledger N1 → area 30)
+
+BEHAVIOURAL PROBE: Ask for specific numbers — "How many depreciation areas did you configure?" and "What was the business reason for parallel ledgers?" Strong candidates mention IFRS 16 lease accounting as a recent addition, forcing a new area for ROU assets.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client migrated to S/4HANA 2020 with parallel ledgers (0L = local GAAP, N1 = IFRS). Assets were migrated via AS91 before go-live. Six months post go-live, finance notices that depreciation in IFRS ledger (depreciation area 30) shows ZERO for ALL legacy assets, while new post-go-live asset additions correctly depreciate in both ledgers. AFAB runs without errors. ASKB shows no manual depreciation for area 30. Walk me through the root cause diagnosis and the safest correction approach without creating trial balance breaks.`,
+      kw:["AS91 take-over values","AFAR recalculation","OAAQ last closed year","ABST2","area 30 APC","cumulative depreciation transfer","migration date","AFAB period","area 30 blank","ABF1","mass change","ANLC table"],
+      ans:`ROOT CAUSE DIAGNOSIS:
+
+Step 1 — Check ANLC table (asset values per area):
+Run SE16 → ANLC → filter by company code, year, and depreciation area 30. If fields NAFAG (planned depreciation) and KANSW (APC) are ZERO for legacy assets, the take-over values were never populated for area 30 during AS91 migration.
+
+Step 2 — Confirm in AS03:
+Open any legacy asset → Depreciation Areas tab → Area 30 row. If APC value = 0 and accumulated depreciation = 0 → confirmed: AS91 template was not filled for area 30. This is a data migration error, not a config error.
+
+Step 3 — Confirm new assets work:
+New assets added post go-live get area 30 values from IFRS depreciation key config → they work because they're not legacy. This confirms the config is correct, the issue is data-only.
+
+CORRECTION APPROACH (safest):
+
+Option A — LSMW/LTMOM mass update of AS91 values:
+1. Extract current area 30 target APC, accumulated depreciation, and depreciation start date for all legacy assets from source system or migration tracking sheet
+2. Use LSMW (BDC for AS92 — asset sub-number change) or LTMOM (migration cockpit) to post take-over values for area 30 only
+3. After upload, run AFAR (recalculate depreciation, T-code AFAR) → system recalculates and catches up planned depreciation for area 30
+4. Run AFAB for each historical period in area 30 only (uncheck area 01 to avoid double-posting) to bring accumulated depreciation current
+
+Option B — ABF1 manual depreciation posting:
+For smaller asset populations: Use ABF1 to manually post accumulated depreciation catch-up for area 30 per asset. This is auditable but time-consuming.
+
+Post-correction: Run ABST2 (FI-AA reconciliation) to confirm GL balances for IFRS ledger match asset sub-ledger values.
+
+KEY LESSON: AS91 template design is the most critical data migration activity in AA — every depreciation area that posts to GL MUST have APC and accumulated values populated. A checklist sign-off per area should be part of migration testing.`
+    }
+  ]
+},
+
+newgl: {
+  title: "New GL Implementation & Migration",
+  bbsiRef: "Financial Accounting → New GL Implementation / Migration",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical",
+      q:`What are the key differences between Classic GL and New GL in SAP? List at least five functional improvements New GL offers, and explain what the universal journal means in S/4HANA context.`,
+      kw:["New GL","FAGLFLEXT","GLT0","document splitting","parallel accounting","ledger groups","segment reporting","real-time CO-FI reconciliation","extension ledger","ACDOCA universal journal","EC-PCA merger","trailing zeroes"],
+      ans:`CLASSIC GL vs NEW GL — KEY DIFFERENCES:
+
+Storage: Classic GL stores totals in GLT0 (by account/company code/fiscal period). New GL stores totals in FAGLFLEXT and line items in FAGLFLEXA, with additional dimensions (profit centre, segment, partner profit centre).
+
+1. DOCUMENT SPLITTING: New GL supports real-time document splitting at profit centre/segment level — impossible in Classic GL without SPL (Special Purpose Ledger).
+
+2. PARALLEL ACCOUNTING: New GL uses ledger groups (0L = leading, non-leading ledgers for IFRS, US GAAP) within the GL itself — no need for a separate reconciliation ledger.
+
+3. SEGMENT REPORTING: New "Segment" dimension in New GL (GSBER successor) allows IFRS 8 operating segment reporting directly from GL.
+
+4. REAL-TIME CO-FI RECONCILIATION: Classic GL required a periodic KALC reconciliation run between CO and FI. New GL eliminates this — CO and FI are always in sync.
+
+5. INTEGRATION OF EC-PCA: Profit Centre Accounting is merged into GL — no separate EC-PCA tables (GLPCA) — profit centre values are in the same GL line item.
+
+6. EXTENSION LEDGER (S/4HANA): Allows postings on top of the leading ledger without duplicating base data — useful for simulations, local adjustments.
+
+UNIVERSAL JOURNAL (ACDOCA) — S/4HANA:
+In S/4HANA, the "Universal Journal" concept takes this further — ALL financial postings (FI, CO, AA, ML) write to a single table ACDOCA. FAGLFLEXT, COEP, ANLP, and other tables become compatibility views derived from ACDOCA. This eliminates reconciliation entirely — there is ONE source of truth for all accounting dimensions.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`During a New GL migration from Classic GL in ECC, the migration cockpit shows status "Complete" for all company codes. Post-migration, users run S_ALR_87012301 (Classic GL balance report) and FAGLB03 (New GL balance report) for the same GL accounts. Balances differ by exactly the net value of intercompany clearing postings. The zero-balance clearing account is maintained. What caused this specific variance and what is the safest non-destructive correction?`,
+      kw:["FAGL_MIG_STATUS","migration cockpit","FAGL_MIG_CUST","zero-balance account","intercompany","document migration","profit centre assignment","FAGLGVTR balance carryforward","GCAC","FAGL_FC_TRANS","split reversal"],
+      ans:`ROOT CAUSE ANALYSIS:
+
+The difference equal to intercompany clearing net value is a strong indicator of a specific migration gap:
+
+During New GL migration, the migration cockpit processes existing Classic GL documents and re-creates them with New GL splitting rules applied. For intercompany documents (posted before New GL activation), the migration tool must retroactively determine profit centre assignments for the intercompany clearing line items.
+
+Problem: Intercompany clearing accounts are often posted without a CO account assignment object (no cost centre, no internal order) — because they are balance sheet accounts. When the migration tool tries to split the intercompany line item, it cannot determine a profit centre → it either:
+a) Falls back to the dummy profit centre (causing the difference), or
+b) Posts the split to the zero-balance clearing account, but if the zero-balance clearing account was not defined correctly at migration time, the amounts accumulate there rather than clearing.
+
+The net effect: S_ALR_87012301 reads GLT0 (untransformed Classic data) → shows original values. FAGLB03 reads FAGLFLEXT (migrated New GL data) → shows values with the intercompany lines on dummy profit centre, creating a visible difference.
+
+SAFE CORRECTION STEPS:
+
+1. Run FAGL_MIG_STATUS → confirm migration is truly complete (no items in "open" status)
+
+2. Run FAGL_FC_TRANS (New GL: Transfer of Classic Documents) for the affected company codes and fiscal years — this tool specifically handles retroactive profit centre assignment for documents that didn't get a valid assignment during initial migration
+
+3. If FAGL_FC_TRANS resolves the profit centre assignment, run FAGLGVTR (New GL Balance Carryforward) for affected years to rebuild FAGLFLEXT totals correctly
+
+4. For residual amounts on the zero-balance clearing account: post a clearing document via FB01 assigning the correct profit centre — do this only after Finance signs off on the profit centre logic for intercompany postings
+
+DO NOT: Reverse and re-post migrated documents — this destroys the migration audit trail and creates reconciliation nightmares with the source system.`
+    }
+  ]
+},
+
+bank: {
+  title: "Bank Accounting",
+  bbsiRef: "Financial Accounting → Bank Accounting",
+  area: "fi",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the Electronic Bank Statement (EBS) process in SAP — how does it work from file import to final clearing? What are posting rules and search strings, and why do they matter?`,
+      kw:["electronic bank statement","FF.5 / FEBP","MT940 BAI2","posting rules","account symbols","search strings","interpretation algorithms","house bank","bank account","transaction types","SWIFT","auto-clearing","manual post"],
+      ans:`CONCEPT: EBS automates the bank reconciliation process by importing bank-provided transaction files and matching them to SAP open items.
+
+PROCESS FLOW:
+1. Bank sends statement in MT940 (SWIFT) or BAI2 format
+2. Import via FF.5 (classic) or FEBP (new Fiori/bank communication), or FEBA (manual entry)
+3. System reads each bank transaction and applies:
+   a) EXTERNAL TRANSACTION TYPE → mapped to SAP internal transaction type → controls which posting rule applies
+   b) POSTING RULE → defines the accounting entry (which GL accounts to debit/credit, how to clear)
+   c) ACCOUNT SYMBOL → placeholder for the actual GL accounts (configured per company code)
+4. SEARCH STRINGS → defined algorithms that look for text in the bank statement note-to-payee field (e.g., invoice number, payment document number, check number) to identify the matching SAP open item
+5. If a match is found → item is automatically cleared (zero open item)
+6. If no match → posting goes to an interim/suspense account for manual clearing
+
+CONFIG PATH (SPRO → FI → Bank Accounting → Business Transactions → Electronic Bank Statement):
+1. Define House Banks (FI12) and bank accounts
+2. Create account symbols and map to GL accounts per company code
+3. Define posting rules (debit/credit account assignments)
+4. Define transaction types and assign posting rules
+5. Define search strings (text algorithms for automatic matching)
+
+BEHAVIOURAL: A good candidate mentions the challenge of getting the bank's file format right, testing the import in quality before go-live, and the common problem of the bank statement arriving before end-of-day payments are posted — causing false "unmatched" items.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client imports EBS (MT940) via FF.5. 95% of items auto-clear correctly. However, 5% of outgoing payments are never matched — they sit as uncleared in the bank statement even though the amounts and value dates are identical in SAP. Investigation shows these are all cheque payments made via F110 with payment method 'C'. The search string is configured to look for the payment document number in the "note to payee" field. Why are these specific payments NOT matching, and what is the exact fix including the SAP table and algorithm to use?`,
+      kw:["cheque number","PAYR table","F110 payment method C","search string algorithm 011 013","note to payee","check management","FCH5 pre-numbered checks","payment document vs check number","FEBP","bank statement algorithm","BSEG KIDNO"],
+      ans:`ROOT CAUSE — Cheque Number ≠ Payment Document Number:
+
+When F110 runs for payment method 'C' (cheque), SAP creates:
+• A payment document (e.g., document number 1500000123) stored in BKPF/BSEG
+• A separate cheque number (e.g., 00100456) stored in table PAYR (field CHECT = cheque number)
+
+The bank sends the PHYSICAL CHEQUE NUMBER in the MT940 note-to-payee field — NOT the SAP payment document number. The search string algorithm looking for "payment document number" in the note-to-payee will never find a match, because the document number and cheque number are different fields that typically have completely different values.
+
+This is one of the most-reported EBS issues on SCN/SDN forums — teams configure the search string correctly for wire payments (where the document number IS sent as reference) but don't account for cheque payments where the bank sends the cheque serial number.
+
+EXACT FIX:
+
+Option A — Use Interpretation Algorithm 011 or 013 (Cheque Number Matching):
+• Algorithm 011: Matches bank statement item to SAP cheque via PAYR table (cheque register). The bank's cheque number is compared to PAYR-CHECT.
+• Navigate: SPRO → EBS → Define Transaction Types → For the external transaction type covering cheque payments → change interpretation algorithm from your current setting to 011
+• Prerequisite: Cheques must be pre-numbered and registered in SAP before the payment run. Use FCH5 (Create Manual Cheque) or let F110 auto-number if cheque management is configured.
+
+Option B — Configure search string to match PAYR field:
+• Create a new search string that reads the bank's reference and looks up PAYR-CHECT. The search string "Note to payee" syntax can reference payment advice data.
+
+Verify cheque pre-numbering: FCH5 → enter bank account → pre-number cheques so PAYR is populated before F110 runs. Without pre-numbering, PAYR has no data and algorithm 011 also fails.`
+    }
+  ]
+},
+
+// ── MANAGEMENT ACCOUNTING (CO) ────────────────────────────────────
+
+cca: {
+  title: "Cost Center Accounting",
+  bbsiRef: "Management Accounting → Cost Center Accounting",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the difference between Distribution and Assessment in SAP CCA. When would you recommend each to a client, and what happens to the original cost element in each case? Have you configured an iterative allocation cycle? What business problem did it solve?`,
+      kw:["distribution","assessment","allocation cycle","KSV5","KSU5","secondary cost element","primary cost element","tracing factor","statistical key figure","iterative","sender/receiver","cycle/segment"],
+      ans:`CORE DIFFERENCE:
+
+DISTRIBUTION (KSV5):
+• Moves primary cost elements from sender cost centre to receiver cost centres, KEEPING the original cost element
+• Receiver sees "Electricity" or "Rent" — the actual expense type from the sender
+• Used when: Receivers need to see and report on the original cost nature (e.g., production cost centres receiving utilities)
+• GL impact: Credit on sender, debit on receiver — both using the SAME primary cost element
+
+ASSESSMENT (KSU5):
+• Combines ALL sender costs into a secondary cost element of type 42 (assessment cost element)
+• Receiver sees only one line: "IT Overhead Assessment" — no breakdown of underlying expenses
+• Used when: The detailed cost structure of the service centre is irrelevant for receivers (e.g., HR overhead, IT overhead)
+• GL impact: Uses a secondary cost element that exists only in CO — no FI posting unless reconciliation ledger is active
+
+TRACING FACTORS:
+• Statistical key figures (headcount, floor space, machine hours) — most common and meaningful
+• Actual/plan costs of receiver — less common but valid for cascading allocations
+• Fixed percentages — simplest but least dynamic
+
+ITERATIVE ALLOCATION:
+When service cost centres allocate to each other (e.g., IT allocates to HR and HR allocates to IT), a non-iterative cycle would leave residuals. Iterative cycles solve this by running multiple passes until the residual falls below a defined tolerance.
+
+BEHAVIOURAL: Strong candidates mention designing the tracing factor strategy — "We used headcount for HR overhead, CPU hours from SolMan reports for IT, and square metres from facilities for rent." This shows understanding beyond just configuration.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client's month-end iterative assessment cycle (KSU5) has 5 segments with mutual dependencies between 3 service cost centres. The cycle runs for 99 iterations and stops with an error: "Maximum number of iterations reached. Residual balance of EUR 0.03 remains on cost centre 5500." Month-end close is on hold. The allocation manager wants to re-run from scratch — what are the two technical reasons this residual persists, the FASTEST resolution without re-running the full cycle, and the permanent fix to prevent recurrence?`,
+      kw:["iterative allocation","rounding difference","maximum iterations","tolerance","EUR 0.03","KB11N manual reposting","cycle tolerance field","RKACOR","tracing factor 100%","KSII actual price calculation"],
+      ans:`TWO TECHNICAL REASONS FOR THE RESIDUAL:
+
+REASON 1 — Rounding in Currency:
+Each iteration distributes fractional amounts. In EUR with 2 decimal precision, allocating 33.333...% three ways always leaves EUR 0.01 rounding difference per iteration. Over 99 iterations, the residual converges toward but never reaches exactly zero. The cycle stops at max iterations with a small rounding amount (EUR 0.03 is the accumulated undistributed rounding difference).
+
+REASON 2 — Percentage Tracing Factors Don't Sum to Exactly 100%:
+If tracing factors for a segment are maintained as percentages with decimals (e.g., 33.3% + 33.3% + 33.3% = 99.9% not 100%), the remaining 0.1% is never allocated and compounds across iterations. Run RKACOR (CO Reconciliation) to display the actual factor totals per segment — this is the diagnostic tool.
+
+FASTEST RESOLUTION (without full re-run):
+
+1. Post a manual CO reposting via KB11N:
+   • Debit receiving cost centre (pick the dominant receiver) EUR 0.03
+   • Credit cost centre 5500 (sender) EUR 0.03
+   • Use the same secondary cost element as the assessment
+   • This brings cost centre 5500 to zero balance and unblocks close
+   • Document the entry as "Month-end allocation rounding adjustment" for audit trail
+
+2. DO NOT re-run the full cycle — KB11N is instantaneous and period-specific
+
+PERMANENT FIX:
+
+1. Increase iteration tolerance in the cycle definition: In KSU5 → Edit cycle → Iteration tab → set "Tolerance for iteration completion" from 0.00 to 0.01 (or 0.05 for smaller allocations). System will declare the cycle complete when residual is below tolerance rather than requiring exact zero.
+
+2. Review percentage tracing factors — change to statistical key figures based on actual data (headcount, hours) which inherently sum to 100% without rounding issues.`
+    }
+  ]
+},
+
+io: {
+  title: "Internal Orders",
+  bbsiRef: "Management Accounting → Internal Orders",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the full lifecycle of an internal order in SAP CO — from creation to closure. What is the role of the settlement rule, and how does budget availability control work? Describe a real scenario where you used internal orders for capital expenditure tracking.`,
+      kw:["order type","status management","CRTD REL TECO CLSD","settlement rule","settlement profile","settlement cost element","KO01 KO22 KO88","budget profile","tolerance profile","availability control","AuC","KOAO"],
+      ans:`INTERNAL ORDER LIFECYCLE:
+
+1. CREATION (KO01): Define order type (KOT2 controls status profile, settlement profile, planning profile). Assign cost centre, responsible person, profit centre, plant. Order starts in status CRTD (Created).
+
+2. PLANNING (KPF6/KO12): Enter planned costs — total or annual plan — before releasing.
+
+3. BUDGET & AVAILABILITY CONTROL (KO22/KOAO):
+   • Budget: absolute ceiling on how much can be spent (different from plan)
+   • Availability control activation (KOAO): links a tolerance profile that defines: at what % of budget to issue warning (e.g., 90%) vs error (e.g., 100%) — prevents overspending
+   • Types: 1 = Warning, 2 = Warning + mail to order manager, 3 = Error (hard block)
+
+4. RELEASE (KO02 → Release): Status changes to REL (Released). Actual postings can now be made against the order.
+
+5. COST ACCUMULATION: During the life of the order, all actual costs post to it (from FI postings referencing the order, time confirmations, goods movements).
+
+6. TECHNICAL COMPLETION (KO02 → TECO): No more actual costs can be posted. Order is ready for final settlement.
+
+7. SETTLEMENT (KO88): Settles costs from the order to receiver(s) — cost centre, GL account, WBS element, profitability segment, or fixed asset (for AuC → FA). Uses settlement rule (receiver type, settlement %, settlement cost element).
+
+8. CLOSE (KO02 → CLSD): Final status after balance is zero.
+
+BEHAVIOURAL: For capex orders, mention the AuC (Asset Under Construction) flow — order collects capex costs during construction, then settles to a final asset via AIAB/AIBU at completion. Strong candidates mention the integration with IM (Investment Management) for budget-level control.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client runs KO88 (settlement) for 50 capital internal orders settling to fixed assets. 48 settle successfully. 2 orders fail with message: "Posting to asset [XXXXX] not possible — APC value posting not permitted for depreciation area 32 in asset class 4000." The asset class 4000 configuration hasn't changed. These 2 failing orders have identical order type and settlement profile as the 48 that worked. Walk me through your exact diagnostic steps and the root cause — including why asset class 4000 in area 32 might NOT allow APC values.`,
+      kw:["APC value posting","OAYZ","depreciation area 32","asset class 4000","settlement rule","KO03","asset under construction","ABUMN transfer","ANLB ANLC tables","area setting 0 1 2 3","AO90"],
+      ans:`DIAGNOSTIC STEPS:
+
+Step 1 — Read the error precisely:
+"APC value posting not permitted for depreciation area 32" means SAP tried to post an acquisition value to the target asset, but area 32 in that asset class is configured to NOT allow APC values. This is a configuration issue on the RECEIVING asset, not on the internal order.
+
+Step 2 — Check the settlement rule of the 2 failing orders (KO03):
+• Open each failing order → Settlement parameters → Settlement rule → note the "receiver type" and "receiver" (the target asset number or asset class)
+• Compare receiver asset to the 48 successful ones — are they in the same asset class (4000)?
+
+Step 3 — Check OAYZ (Specify Depreciation Areas in Asset Class):
+Navigate: OAYZ → Select chart of depreciation → Select asset class 4000 → View all depreciation areas
+For area 32, check the field "APC values" — options are:
+• 0 = No values allowed (PREVENTS APC posting) ← THIS IS THE LIKELY CAUSE
+• 1 = APC values allowed (normal)
+• 2 = APC values same as area 01
+• 3 = APC values negative (rare — for contra accounts)
+
+ROOT CAUSE:
+The 2 failing orders settle to assets whose asset class has area 32 set to "0 = No values allowed." This could be because:
+a) The 2 failing orders settle to a DIFFERENT asset class than assumed (check the settlement rule asset number → AS03 → note the asset class)
+b) Area 32 was intentionally set to no values in asset class 4000 for GAAP reasons — but a recent transport changed the settlement rule destination to an asset in this class
+
+Step 4 — Verify:
+AS03 → target asset from failing order → check asset class. Then OAYZ → that asset class → area 32 setting.
+
+RESOLUTION:
+If the area 32 "no values" setting is intentional (e.g., area 32 is a derived area with no independent posting): Change the settlement rule in the internal order to settle only to areas where APC is permitted. This is done in AIAB/AIBU configuration for AuC settlement, specifying which depreciation areas to include.
+
+If it's a misconfiguration: Change OAYZ for asset class → area 32 → set to "1 = APC values" — but this requires transport and Finance/Audit sign-off.`
+    }
+  ]
+},
+
+copa: {
+  title: "Profitability Analysis (CO-PA)",
+  bbsiRef: "Management Accounting → Profitability Analysis",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Compare costing-based COPA and account-based COPA. What are the reconciliation challenges in costing-based COPA, and why does SAP recommend account-based COPA in S/4HANA? Have you worked on a COPA implementation? What were the most complex derivation rules you configured?`,
+      kw:["costing-based COPA","account-based COPA","value fields","cost elements","CE1 CE2 tables","ACDOCA","reconciliation","KE30","margin analysis","operating concern","characteristic derivation","KEA0","KEDR"],
+      ans:`COSTING-BASED COPA:
+• Uses custom "value fields" (aggregation buckets like Revenue, Material Cost, Sales Discount) — not bound to cost element structure
+• Flexible for custom margin reporting — you define what goes into each bucket
+• Data stored in separate CE1XXXX (line items) and CE2XXXX (totals) tables — NOT in GL
+• PROBLEM: Requires periodic reconciliation with FI/GL — these tables can drift from FI balances due to timing, posting differences, or config gaps
+• Reconciliation via KEAT (PA reconciliation report) or comparison reports
+
+ACCOUNT-BASED COPA:
+• Uses actual cost elements directly — same accounts as FI postings
+• Stored in ACDOCA (S/4HANA universal journal) — ALWAYS reconciled with FI by definition
+• Less flexible for custom aggregation but completely transparent and auditable
+• Supports parallel accounting (different ledgers)
+
+S/4HANA RECOMMENDATION:
+SAP has designated account-based COPA as the strategic approach in S/4HANA under the "Margin Analysis" product. Reasons:
+1. Universal journal — all dimensions in one table, no reconciliation
+2. Real-time — no transfer jobs or timing gaps
+3. Parallel accounting support — ledger-specific margin analysis
+4. Simplified data model — no CE1/CE2 tables to maintain
+
+COSTING-BASED is still supported but SAP's roadmap invests in account-based.
+
+BEHAVIOURAL: Strong candidates describe the complexity of characteristic derivation (KEDR) — especially for custom characteristics that don't have a direct mapping from SD or CO, requiring table lookups or substitution logic. Also mention the challenge of cost element mapping to value fields (KEKF) — this is where reconciliation problems are born.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client upgraded from ECC 6.07 to S/4HANA 1909. Post-upgrade, billing documents post to FI correctly, but COPA documents are NOT being generated for sales org US10. KE24 shows no line items for US10. The PA transfer structure is correctly assigned. The operating concern is active. Other sales orgs generate COPA documents fine. List FIVE specific diagnostic checks in exact sequence, including the transaction or table for each check.`,
+      kw:["KE4ST simulation","operating concern assignment","KEA0","controlling area assignment","company code company code to CO area","billing type COPA","KEDR characteristic derivation","active indicator","KE4T billing type","OVK6 COPA sales org assignment"],
+      ans:`FIVE DIAGNOSTIC CHECKS IN SEQUENCE:
+
+CHECK 1 — Company code → Controlling area → Operating concern chain:
+Sales org US10 is likely assigned to a specific company code (VKORG assignment in OVK6). Verify that company code is assigned to a controlling area (OX19), and that controlling area is assigned to the ACTIVE operating concern (KEA0 → Controlling area assignment tab).
+• If US10's company code is NOT under the same controlling area as other sales orgs → COPA documents will not be generated for any postings from that company code.
+
+CHECK 2 — Billing type assignment to COPA:
+Not all billing types are automatically configured for COPA transfer. Check if the billing types used for US10 orders are included in COPA billing type assignment.
+• Path: SPRO → CO → COPA → Flows of Actual Values → Transfer of Billing Documents → Assign Billing Types
+• Or transaction KE4T: check if US10's billing types are listed and have "COPA active" flag
+
+CHECK 3 — Run KE4ST (COPA Billing Document Simulation):
+Take a specific billing document from US10 and run KE4ST (COPA: Simulate Billing Document Transfer). This simulates the transfer and shows exactly which step fails — whether it's characteristic derivation, value field assignment, or operating concern scope.
+• If KE4ST shows a derivation error → proceed to Check 4
+• If KE4ST shows the document simply "not in scope" → go to Check 1 or 2
+
+CHECK 4 — Characteristic derivation errors (KEDR):
+If US10 has a unique distribution channel, customer group, or region not covered by derivation rules, a mandatory characteristic may fail derivation → the entire COPA document is suppressed (no partial document).
+• Run KEDR → trace derivation steps → identify which characteristic gets no value for US10's data combination
+• Fix: Add a derivation rule or table lookup for the missing characteristic value for US10
+
+CHECK 5 — S/4HANA-specific — Operating concern mode mismatch:
+In S/4HANA, if the operating concern is configured for ONLY account-based COPA (and costing-based is deactivated), but the check is being run against costing-based COPA tables (CE1), documents will appear missing.
+• KEA0 → Operating concern → check "Type of Profit. Analysis" — if set to "A" (account-based only), costing-based COPA documents are never created and KE24 (which shows costing-based line items) will always appear empty.
+• Resolution: Check KE30 (account-based report) instead, or activate both types in KEA0.`
+    }
+  ]
+},
+
+pc: {
+  title: "Product Costing",
+  bbsiRef: "Management Accounting → Product Costing",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Describe the components of a standard cost estimate in SAP and the process to release it. What are the key differences between a preliminary, simultaneous, and final costing? Have you configured a costing sheet for overhead calculation?`,
+      kw:["costing variant","valuation variant","CK11N CK40N","BOM routing","overhead costing sheet","cost component split","mark and release","CK24","price control V vs S","activity type rates","KKPHIE cost rollup","KP26"],
+      ans:`STANDARD COST ESTIMATE COMPONENTS:
+
+1. MATERIAL COSTS: Raw materials and semi-finished goods valued via the valuation variant strategy (planned price → standard price → moving average → info record price — in priority order)
+
+2. ACTIVITY COSTS: Production operations (machine time, labour time) × activity type price. Activity type planned prices are set in KP26 per cost centre/activity type combination.
+
+3. OVERHEAD: Applied via the costing sheet — overhead rates (%) applied to a base (material cost or direct cost). Example: 15% overhead on direct material cost for factory overhead.
+
+4. COST COMPONENT SPLIT: Breaks the total cost into components (Raw Material, Labour, Machine, Overhead, Depreciation) — used in management reporting to see cost structure.
+
+PROCESS TO RELEASE:
+1. CK40N (costing run) or CK11N (single material): reads BOM and routing, calculates all components
+2. Mark (within CK40N or CK24): fills the "future standard price" field in material master — NOT yet active, no accounting document
+3. Release (CK24): activates the future standard price as the new standard price → creates accounting document for the price difference between old and new standard
+4. All subsequent GR and production order settlements use the new released standard price
+
+COSTING TYPES:
+• Preliminary costing: cost estimate at order creation (expected cost)
+• Simultaneous costing: actual costs as order progresses (WIP calculation uses this)
+• Final costing (actual/KKML): Material Ledger final price after period-end actual costing run
+
+BEHAVIOURAL: Strong candidates mention the challenge of costing materials with very long BOM hierarchies — rollup timing, ensuring semi-finished goods have released cost estimates before running parent material costing.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A production client runs the costing run (CK40N) for 500 materials in plant IN01. 480 complete with status 'KF' (cost estimate completed). 20 materials get status 'KA' (completed with errors — cost estimate has messages). The standard price for these 20 is incorrect and needs to be fixed before month-end release. BOM and routing are correct for all 20. Without opening each material individually, how do you identify the root cause for all 20 simultaneously? List the three most common KA root causes with the exact SAP object to check for each.`,
+      kw:["KA status","CK13N costing log","CKMACD","valuation variant strategy","info record validity","moving average price zero","semi-finished standard price missing","price determination","CK11N error log","material ledger","MBGR info record","purchasing info record ME11"],
+      ans:`BATCH DIAGNOSIS WITHOUT OPENING EACH MATERIAL:
+
+PRIMARY TOOL — CK13N (Display Cost Estimate) with Itemisation:
+• Open CK40N → select the costing run → go to "Results" tab → filter status = 'KA'
+• This shows all 20 materials with KA status. Click "Costing Log" for the entire run → system shows ALL messages across all materials in one list → sort by material number → each row shows the exact warning/error message for that material's cost estimate
+• Alternatively: CK40N → Results → "Protocol" → displays a structured log with all KA materials and their specific messages grouped
+
+OR via CKMACD: Access the costing run's detailed log at run level — exports all messages to a list that can be downloaded to Excel for mass analysis.
+
+THREE MOST COMMON KA ROOT CAUSES:
+
+ROOT CAUSE 1 — No valid purchasing info record (or expired):
+• Message: "Price for material X in plant Y could not be determined"
+• The valuation variant strategy tried to get the price from purchasing info record (ME11) but either it doesn't exist or the validity period has expired
+• Check: ME13 (Display info record) → filter by material and plant → check "Valid To" date
+• Fix: Create/extend the info record (ME11) or maintain a planned price (MR21) as fallback in the valuation variant strategy
+
+ROOT CAUSE 2 — Raw material component has moving average price = 0 AND zero stock:
+• If a raw material is price-controlled 'V' (moving average price) and has zero stock with zero MAP, SAP cannot use 0 as a cost — it triggers a warning and falls back to other strategies
+• Check: MM03 → Accounting 1 view → check "Moving Avg Price" and "Total Stock"
+• Fix: Enter a planned price (MR21 or material master costing view → planned price field) so the valuation variant has a non-zero fallback
+
+ROOT CAUSE 3 — Semi-finished component has no released standard cost estimate:
+• If the BOM includes a semi-finished material (price control 'S') whose standard cost estimate is not released for the current period, the parent material's rollup cannot pick up the child's cost
+• Check: CK13N → open the parent material's cost estimate → expand BOM items → semi-finished line shows "no standard cost estimate" or "using previous period estimate"
+• Fix: Run CK11N or CK40N for the semi-finished material first → release it (CK24) → re-run the parent material's costing run
+
+Note: KA status does NOT block release — but the released standard price will be wrong. Always review KA materials before CK24.`
+    }
+  ]
+},
+
+pca: {
+  title: "Profit Center Accounting",
+  bbsiRef: "Management Accounting → Profit Center Accounting",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`How is profit centre determined during document posting in SAP? What happens when no profit centre can be determined, and how does the dummy profit centre function? In New GL with mandatory profit centre splitting, what are the consequences of a missing assignment?`,
+      kw:["profit centre derivation","cost centre master","internal order master","material master","dummy profit centre","KE59","mandatory characteristic","document splitting","New GL","substitution","profit centre group","3KEH assignment"],
+      ans:`PROFIT CENTRE DERIVATION HIERARCHY (priority order):
+
+1. DIRECT ASSIGNMENT: User manually enters profit centre on the document line item (FI posting)
+2. COST CENTRE: If cost centre is assigned → profit centre is inherited from cost centre master (KS02, field "Profit Center")
+3. INTERNAL ORDER: Profit centre from internal order master (KO03)
+4. WBS ELEMENT: Profit centre from WBS element master (CJ02)
+5. MATERIAL MOVEMENT: Profit centre from material master (MM03 → Sales: Sales Org 1 view → Profit Centre field)
+6. SUBSTITUTION: User-defined rule (OBBH) to derive profit centre based on document attributes
+
+DUMMY PROFIT CENTRE:
+• Defined in controlling area settings (OKKS or KE59)
+• Acts as a "catch-all" when no valid profit centre can be determined
+• Prevents posting failures — the document is posted but profit centre shows as "DUMMY"
+• Consequence: Profit centre balance sheet/P&L reports have a "DUMMY" line that represents leakage — must be investigated and reclassified monthly
+• Long-term presence of DUMMY postings indicates master data gaps (cost centres without profit centre assignment, materials without profit centre)
+
+NEW GL WITH MANDATORY SPLITTING:
+• If profit centre is defined as a MANDATORY balancing characteristic in document splitting settings
+• AND the system cannot determine a profit centre for a line item
+• THEN the posting is BLOCKED entirely with error "Mandatory characteristic Profit Centre not filled"
+• This is more disruptive than Classic GL where it falls back to dummy — in mandatory mode, the entire document is rejected
+
+CLEAN-UP: 3KEH (Profit Center Assignment) → assign GL accounts (especially balance sheet accounts) to default profit centres as a last-resort assignment rule.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client uses New GL with document splitting active, profit centre mandatory. After 6 months of live operation, finance runs the profit centre balance sheet (S_PL0_86000030) and notices the intercompany payable account (recon account for company code B in company code A) consistently shows on the DUMMY profit centre despite all intercompany invoices being posted to real cost centres. All other line items on these same documents show correct profit centres. Why does ONLY the intercompany recon account land on DUMMY, and what is the correct permanent fix without reposting historical documents?`,
+      kw:["reconciliation account","vendor recon account","document splitting 01000","intercompany","passive splitting","zero-balance clearing","FAGL_FC_TRANS","3KEH","account assignment via 3KEH","splitting rule for recon account","partner profit centre"],
+      ans:`ROOT CAUSE — Reconciliation Accounts Cannot Be Directly Split:
+
+Customer and vendor reconciliation accounts are BALANCE SHEET accounts managed by the sub-ledger. In document splitting, the vendor line item (item category 01000) is supposed to get its profit centre through PASSIVE splitting — it should inherit the profit centre from the expense/cost line items in the same document.
+
+For STANDARD vendor invoices (FB60 with domestic vendor), passive splitting works because:
+• The expense lines have explicit profit centres (via cost centre)
+• The vendor recon account inherits by passive split
+
+For INTERCOMPANY vendor invoices (company code B's recon account in company code A):
+• The intercompany clearing account is often a dedicated GL account
+• It may have a splitting rule but lacks a CO account assignment object on the line item
+• The "partner profit centre" concept (for intercompany) requires special configuration — the system needs to know which profit centre in company code A "corresponds to" company code B's posting
+
+The intercompany line gets no profit centre assigned → falls to DUMMY profit centre.
+
+PERMANENT FIX (no historical reposting required):
+
+FIX 1 — 3KEH Assignment (immediate, non-destructive):
+Navigate 3KEH → Assign GL accounts to profit centres. Assign the intercompany recon account to a default "Intercompany" profit centre. This ensures future postings automatically get this profit centre via the GL account assignment — no reposting needed. This is the fastest fix.
+
+FIX 2 — Document splitting configuration for intercompany document type:
+SPRO → Document Splitting → Assign Document Types → Ensure intercompany document types have a splitting rule that handles item category 01000 using "partner profit centre" derivation. This requires creating a splitting rule that reads profit centre from the offsetting document in the paired company code.
+
+HISTORICAL CLEANUP: Run FAGL_FC_TRANS (profit centre transfer for old documents) to reclassify historical DUMMY postings to the correct profit centre. Run this in test mode first, then production — it creates offsetting CO-internal postings.`
+    }
+  ]
+},
+
+tp: {
+  title: "Transfer Pricing",
+  bbsiRef: "Management Accounting → Transfer Pricing",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical",
+      q:`Explain transfer pricing in SAP CO — what is it, why is it needed, and how does SAP Material Ledger support multiple valuation views? What is the Alternative Valuation Run and when is it used?`,
+      kw:["transfer pricing","currency and valuation profile","legal valuation","group valuation","profit centre valuation","material ledger","CKMVFM alternative valuation run","CKMLCP","multiple valuations","price agreement","parallel currencies"],
+      ans:`CONCEPT: Transfer pricing is the internal pricing used when goods or services are transferred between entities within the same corporate group. For tax/legal purposes, goods might be transferred at a specific arm's-length price, but for management reporting, a different price might be used internally.
+
+WHY NEEDED:
+• Legal compliance: Tax authorities require intercompany transfers to be at market (arm's-length) prices — legal valuation
+• Group reporting: Eliminate intercompany profit for consolidated financial statements — group valuation (at cost)
+• Internal performance measurement: Profit centres should see a "fair" internal price — profit centre valuation (internal transfer price)
+
+SAP MATERIAL LEDGER SUPPORT — THREE VALUATION VIEWS:
+1. Legal Valuation: Standard/actual cost per legal requirements — basis for statutory reporting
+2. Group Valuation: Intercompany profit eliminated — transferred goods at original production cost regardless of transfer price
+3. Profit Center Valuation: Specific internal price agreed between divisions — for profit centre P&L reporting
+
+CONFIGURATION: SPRO → Controlling Area → Multiple Valuation Approaches → Define Currency and Valuation Profile → assign to controlling area. Each view uses a separate ML component.
+
+ALTERNATIVE VALUATION RUN (CKMVFM):
+• At period-end, the standard CKMLCP (ML Cockpit) calculates actual costs for legal valuation
+• CKMVFM runs separately to calculate actual costs for group and profit centre valuation
+• It considers the transfer prices maintained in price agreements and recalculates the cost component split for each valuation view
+• Run sequence: CKMLCP (legal) → CKMVFM (group + PC valuation) → results posted to parallel ML ledgers`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client has Material Ledger active with all 3 valuation views. CKMLCP (legal valuation) runs successfully. CKMVFM for group valuation runs successfully. CKMVFM for profit centre valuation fails with: "Transfer price not found for material MAT-X in plant P001 for period 006/2024." The price agreement is maintained in condition records. What are the three specific places the system looks for the transfer price and what exactly can cause this "not found" error even when condition records exist?`,
+      kw:["condition record","price agreement","valuation level","CKMVFM","ML period","condition type PRXX","pricing date","plant-level vs profit centre level","material ledger actual costing","ML document","MBGR KOMV"],
+      ans:`THREE PLACES SYSTEM LOOKS FOR TRANSFER PRICE:
+
+1. CONDITION RECORD (VK11/VK12 or ML-specific price agreements):
+System checks for a valid condition record for the transfer pricing condition type (often a custom condition type like ZTP1) with key: Material / Plant / Receiving plant or profit centre / Validity period.
+
+2. MATERIAL LEDGER PRICE AGREEMENT MAINTENANCE (transaction ML-specific):
+In some configurations, transfer prices are maintained directly in the ML period-specific data rather than SD condition records. The system checks period 006/2024 specifically — not a general validity period.
+
+3. STANDARD PRICE AS FALLBACK:
+If no specific transfer price is found, the system may fall back to the standard price — but if the configuration requires an explicit transfer price and none is found, it throws the "not found" error rather than using fallback.
+
+ROOT CAUSES FOR "NOT FOUND" DESPITE CONDITION RECORDS EXISTING:
+
+CAUSE 1 — Validity period mismatch:
+The condition record is valid from 01.01.2024 to 31.05.2024, but the run is for period 006 (June 2024). The pricing date used by CKMVFM (usually period-end or period-start date) falls outside the condition record validity.
+• Check: VK13 (Display condition) → check "Valid From / Valid To" dates. Extend or create new condition for period 006 onwards.
+
+CAUSE 2 — Key combination mismatch:
+The condition record uses a key of Plant + Material, but the CKMVFM is looking for Plant + Material + Profit Centre (or Receiving company code). One attribute in the lookup key doesn't match what's stored.
+• Check: Display the condition record key fields vs what CKMVFM requests (activate ML trace/log during CKMVFM run to see the exact key it's trying to find).
+
+CAUSE 3 — ML period not open for profit centre valuation:
+Even if the condition exists, CKMVFM for the PC valuation view may be trying to write to a period that isn't open in the ML calendar for that valuation type.
+• Check: CKMVFM → Posting → Check period open status for valuation level "Profit Centre Valuation." Open the period if closed.
+
+DIAGNOSTIC: Activate "Detail Log" in CKMVFM run — it shows the exact key combination being searched and the lookup sequence, making it straightforward to see which of the three causes applies.`
+    }
+  ]
+},
+
+ps: {
+  title: "Project Systems (CO-PS Integration)",
+  bbsiRef: "Management Accounting → Project Systems",
+  area: "co",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the CO-PS integration — what is a WBS element, how are costs planned and collected, and how does project settlement work? Describe a project type where you used PS for cost control.`,
+      kw:["WBS element","project definition","network activity","cost planning","CJ20N CJ40","actual cost collection","project settlement CJ88","settlement rule","results analysis","KKAK","profit centre assignment","investment measure"],
+      ans:`WBS ELEMENT (Work Breakdown Structure):
+A WBS element is a structural node in a project hierarchy that acts as a CO account assignment object — similar to an internal order but with a hierarchical structure. Costs are planned and collected at WBS level.
+
+PROJECT STRUCTURE:
+• Project Definition (top level): overall parameters, dates, responsible person
+• WBS Elements: hierarchical breakdown (Phase 1 → 1.1 Design → 1.1.1 Requirements)
+• Networks/Activities: time-sequenced tasks with resources (labor, materials) — assigned to WBS elements
+
+COST PLANNING (CJ20N / CJ40):
+• Overall planning: lump-sum per WBS, not time-phased
+• Detailed planning: cost element planning by period → feeds into cost centre planning (if integrated)
+• Network-based: plan from network activity resource assignments (Bill of Operations)
+
+ACTUAL COST COLLECTION:
+• Purchase orders referencing WBS → goods receipt → actual costs hit WBS
+• Time confirmations against network activities → activity costs hit WBS
+• Travel expenses, overhead → posted via internal order or direct WBS assignment
+
+RESULTS ANALYSIS (KKAK):
+Before settlement, results analysis calculates:
+• Revenue recognised to date (based on POC method or other)
+• WIP (costs not yet eligible for settlement)
+• Profit or loss to recognise
+
+SETTLEMENT (CJ88):
+Settles accumulated costs from WBS elements to receivers: GL accounts (P&L), cost centres, COPA profitability segments, fixed assets. Settlement profile and settlement rule on the WBS control the distribution.
+
+BEHAVIOURAL: Strong candidates mention fixed-price project settlement (customer project type) vs cost-plus, and the complexity of configuring results analysis methods for revenue recognition.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A professional services client uses SD-PS integration (customer projects with milestone billing). After settlement (CJ88), costs are settled from WBS elements to CO-PA profitability segments. Finance reports that the CO-PA contribution margin report (KE30) shows correct revenue from SD billing, but the settled costs appear at incorrect characteristics — specifically the 'Customer' characteristic shows the company's own customer number instead of the actual end customer. What causes this and what is the fix?`,
+      kw:["settlement to COPA","settlement cost element","characteristic derivation KEDR","customer number","WBS customer assignment","CJ20N","results analysis","transfer structure","PA transfer structure","COPA line item KE24","KE4T billing","settlement rule receiver"],
+      ans:`ROOT CAUSE — Characteristic Derivation for Settlement vs Billing:
+
+When SD billing documents post to CO-PA (via the SD billing → COPA flow), the Customer characteristic is derived directly from the SD billing document's sold-to party → the END customer. This is correct.
+
+When WBS settlement (CJ88) posts costs to CO-PA, the characteristics are derived differently:
+• The settlement rule receiver type is "PSG" (Profitability Segment)
+• The profitability segment characteristics are defined at settlement rule creation time or derived via the PA Transfer Structure (assigned to the settlement profile)
+• If the "Customer" characteristic in the settlement rule's profitability segment was not specifically mapped to the end customer, it either:
+  a) Takes the value from the project definition's "Sold-To Party" field — which may be blank or set to the company itself (intercompany billing scenario)
+  b) Gets derived by KEDR (characteristic derivation) using a rule that looks at the CO object (WBS) rather than the SD document — and may pull the wrong customer
+
+SPECIFIC TRIGGER: In SD-PS integration, the WBS element is linked to the SD order. The sold-to party on the WBS (CJ20N → Partner assignment) may have been set to an internal party during project creation, not the end customer. Settlement reads the WBS partner, not the SD document partner.
+
+FIX STEPS:
+
+1. Check CJ20N → Open the WBS element → Partners → verify "Sold-To Party" is the correct end customer, not an internal entity. If wrong → correct in CJ20N before next settlement run.
+
+2. Check the PA Transfer Structure assigned to the settlement profile (SPRO → CO → PS → Settlement → Define Settlement Profile → PA Transfer Structure assignment) → verify that "Customer" characteristic is mapped to the correct source field.
+
+3. Check KEDR (Characteristic Derivation): Add or modify a derivation rule for "Customer" that takes the sold-to party from the WBS customer assignment or from the SD billing document linked to the WBS (via table VBAP/VBKD join to WBS).
+
+4. For historical data: Run KESIM (CO-PA line item correction) or re-run CJ88 after fixing the WBS partner — settlement creates delta documents correcting the characteristic values.`
+    }
+  ]
+},
+
+// ── INTEGRATION SECTION ───────────────────────────────────────────
+
+integration: {
+  title: "Integration with Logistics (FI-MM / FI-SD)",
+  bbsiRef: "Financial Management → Integration with Logistics",
+  area: "both",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain automatic account determination for goods movements in SAP (OBYC / T-code OMWB). What drives which GL account is selected during a goods receipt, and what are the key configuration tables? Describe the most complex account determination issue you have resolved.`,
+      kw:["OBYC","transaction key BSX WRX PRD GBB","valuation class","account modifier","valuation grouping code","chart of accounts","OMWB","material type","account category reference","GR/IR account","inventory account"],
+      ans:`CONCEPT: When goods movements occur in SAP (GR, GI, transfer posting), FI documents are automatically created. The GL accounts used are determined by AUTOMATIC ACCOUNT DETERMINATION — configured in transaction OBYC.
+
+DETERMINATION FACTORS (in combination):
+1. TRANSACTION KEY: The event type — e.g., BSX (inventory posting), WRX (GR/IR clearing), PRD (price difference), GBB (offsetting entry for GI)
+2. VALUATION GROUPING CODE: Maps company code + valuation area to a grouping code (OMWD) — allows different GL accounts per plant or country
+3. ACCOUNT MODIFIER: Sub-category within a transaction key (e.g., for GBB: VBR = consumption, VNG = scrapping, AXP = production order delivery)
+4. VALUATION CLASS: Assigned to the material master (Accounting 1 view) — typically tied to material type (e.g., ROH = 3000 for raw materials, FERT = 7920 for finished goods)
+
+CONFIGURATION TABLES:
+• OMWB: Simulation tool to test account determination for any movement type
+• T030: Stores the GL account assignments (select by chart of accounts + transaction key + grouping code + valuation class + account modifier)
+
+PROCESS FLOW FOR GOODS RECEIPT (101 against PO):
+1. Movement type 101 → triggers transaction keys BSX (inventory debit) and WRX (GR/IR credit)
+2. BSX + valuation grouping code + valuation class → resolves to inventory GL account (e.g., 130000)
+3. WRX + valuation grouping code → resolves to GR/IR account (e.g., 210000)
+4. If purchase price ≠ standard price → PRD triggers price difference account
+
+GOTCHA: "No account determination found" error means either the valuation class is not assigned to a GL account for that transaction key, or the account modifier combination is missing. Use OMWB to simulate before go-live.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client does a goods receipt (MIGO, movement type 101) for a purchase order. The FI document posts to an unexpected GL account — the inventory account is correct (BSX) but the GR/IR offset (WRX) posts to a different account than expected. The WRX account in T030 is correctly configured. No recent transport was applied to OBYC. What are the THREE non-obvious causes of WRX posting to the wrong account, and how do you diagnose each?`,
+      kw:["WRX valuation grouping code","OMWD","plant assignment","company code","chart of accounts","T030 lookup sequence","account assignment category","cost centre PO","GR non-valuated","movement type 101 vs 103","account category reference"],
+      ans:`Three non-obvious causes — the OBYC configuration looks correct but the posting goes to a wrong account:
+
+CAUSE 1 — Valuation Grouping Code changed or incorrect for the plant:
+T030 stores accounts per CHART OF ACCOUNTS + VALUATION GROUPING CODE (not plant directly). Grouping codes are assigned to company code/valuation area combinations in OMWD.
+• If the plant's valuation grouping code was recently changed (even by a well-intentioned Basis team) without updating T030, the system looks up a different row in T030 and finds a different GL account (or none → defaults).
+• Diagnose: OMWD → Check the plant's valuation grouping code. Then T030 → WRX → verify the account for THAT grouping code, not the grouping code you expect.
+
+CAUSE 2 — Account assignment category on the PO triggers a different WRX variant:
+If the PO line item has an account assignment category (e.g., 'K' for cost centre, 'F' for production order), the goods receipt may be treated as a "non-valuated GR" (no inventory posting to stock account) — instead, the cost goes directly to the consumption account and WRX may point to a different account or be suppressed entirely.
+• For cost centre POs with GR-based IV, the GR/IR account used may differ from stock PO GR/IR.
+• Diagnose: ME23N → open the PO → check account assignment category column. If 'K' is present, verify the WRX account for that account assignment category in T030 (some categories have a separate WRX modifier).
+
+CAUSE 3 — Multiple chart of accounts or valuation area scenario:
+In a multi-company code landscape, if the MIGO was accidentally posted against a PO in a different company code or plant, the account determination runs for that company code's chart of accounts and grouping code → different accounts.
+• Diagnose: Check the FI document generated (MIR4 or FB03 from MIGO) → header shows Company Code and the GL account debited. Verify it matches the intended company code. If different → the PO was cross-company.
+
+TOOL: Always use OMWB (Account Determination Simulation) — enter movement type, plant, material, and the system shows exactly which T030 row is selected and which GL account results. This is the fastest diagnostic for any WRX / BSX discrepancy.`
+    }
+  ]
+},
+
+monthend: {
+  title: "Month-End & Year-End Close",
+  bbsiRef: "Process Knowledge → Experience in Monthly/Yearly Closing",
+  area: "both",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Walk me through the sequence of FI/CO month-end close activities. Why does the sequence matter? What is your experience running close activities under time pressure, and what tools do you use to track close status?`,
+      kw:["CO close first","MMPV period close","FAGLGVTR balance carryforward","depreciation run AFAB","GR/IR analysis F.13","foreign currency valuation FAGL_FC_VAL","reclassification F.05","KOAO","KSU5 KSV5","CKMLCP","posting period variant OB52","AJRW fiscal year change"],
+      ans:`MONTH-END CLOSE SEQUENCE (order matters — dependencies between steps):
+
+CO ACTIVITIES (always before FI close):
+1. Activity price calculation (KSII) — update planned/actual activity rates for the period
+2. Overhead calculation (KGI2/CO43) — apply overhead to orders/cost objects
+3. Results analysis (KKAK) — calculate WIP and recognised revenue for projects/orders
+4. Variance calculation (KKS1) — production order variances before settlement
+5. Settlement: Internal orders (KO88), Production orders (CO88), Projects (CJ88)
+6. Assessment/Distribution allocation cycles (KSU5/KSV5)
+7. Actual costing run — Material Ledger (CKMLCP) → must be AFTER all cost object settlements
+
+FI ACTIVITIES (after CO is closed):
+8. Post recurring entries (F.14)
+9. Accruals/deferrals (FBS1 → FB50)
+10. GR/IR analysis and clearing (F.13/GRIR_ANALYSIS)
+11. Foreign currency valuation (FAGL_FC_VAL) — revalue open items and GL balances
+12. Asset depreciation run (AFAB) — post period depreciation
+13. Profit centre adjustments if needed (1KEK/3KEH)
+14. Reclassification for balance sheet (F.05) — reclassify receivables/payables by remaining maturity
+15. Close posting period for prior month (OB52) — prevent back-posting
+16. Balance confirmations with subsidiaries
+
+YEAR-END ADDITIONAL:
+17. AJRW — Asset Accounting fiscal year change
+18. FAGLGVTR — Balance carryforward to new year (GL)
+19. F.07 — Customer/vendor balance carryforward
+
+WHY SEQUENCE MATTERS: CO variances must be settled before FI period is closed (OB52). Material Ledger must run after all production/order settlements. AFAB must run before FI close. If sequence is wrong, you get reconciliation breaks.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`At year-end, the balance carryforward (FAGLGVTR) is run successfully. However, the retained earnings account (P&L → Balance Sheet carryforward) shows a different value in the new year than expected — specifically, it differs by the amount of manual journals posted to cost elements (secondary cost elements) in the current year. Finance suspects a config error. What causes this and how do you identify the exact accounts causing the discrepancy?`,
+      kw:["FAGLGVTR","retained earnings account","P&L account type","secondary cost element","cost element type 1","OBD4","account type S vs P","balance carryforward","fiscal year change","SKB1 table","financial statement version"],
+      ans:`ROOT CAUSE — Account Type Classification:
+
+FAGLGVTR (balance carryforward) works by:
+• GL accounts typed as "P" (P&L accounts) → balance is zeroed and posted to the retained earnings account at year start
+• GL accounts typed as "S" (Balance Sheet accounts) → balance is carried forward as-is to the new year
+
+THE PROBLEM: Secondary cost elements (type 42 = assessment, type 43 = internal activity) are CO-only accounts that normally don't appear in FI. However, if any manual journal (FB50) was posted directly to a primary cost element (G/L account with cost element type 1) that is typed as "S" (Balance Sheet) in OBD4 instead of "P" (P&L), the balance carryforward will NOT clear that balance to retained earnings.
+
+Conversely, if a balance sheet account was accidentally typed as "P", FAGLGVTR would zero it out to retained earnings — creating a wrong carryforward.
+
+DIAGNOSIS STEPS:
+
+Step 1 — Run FAGLGVTR in SIMULATE mode for the current year → it shows which accounts' balances are being cleared to retained earnings and which are being carried forward. Export to spreadsheet.
+
+Step 2 — Identify the discrepancy amount → find which accounts sum to that difference.
+
+Step 3 — For suspicious accounts: SKB1 (or FS03) → check "Account Type" field. Any P&L account showing "S" → this is the culprit (its balance was carried forward instead of closed to retained earnings).
+
+Step 4 — OBD4 (Define account types in chart of accounts) → change the account type from "S" to "P" for the misclassified accounts.
+
+Step 5 — Re-run FAGLGVTR after the correction. If the year is already closed and corrections are needed retroactively, post a period-13 (special period) adjustment in the prior year to move the balance from the P&L account to retained earnings manually (FB01 → period 13).
+
+KEY NOTE: Secondary cost elements (type 42/43) should NEVER appear in the FI document directly. If they do, it's a substitution or BAdI issue that allowed a CO-only account to be used in FI — investigate the source posting.`
+    }
+  ]
+},
+
+// ── TECHNICAL SECTION ─────────────────────────────────────────────
+
+datamig: {
+  title: "Data Migration (LSMW / BDC / LTMOM)",
+  bbsiRef: "SAP Technical → Data Migration / LSMW / BDC",
+  area: "tech",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`What are the available data migration tools in SAP for FI/CO and when would you use each? Describe the steps for migrating open customer invoices (FI-AR) to a new SAP system. What are the key reconciliation steps?`,
+      kw:["LSMW","BDC batch input","LTMOM migration cockpit","direct input","BAPI","F-22 FB01","migration object","legacy data mapping","reconciliation","balance confirmation","cutover plan","open items vs balances"],
+      ans:`MIGRATION TOOLS AND USE CASES:
+
+1. LSMW (Legacy System Migration Workbench):
+• Best for: Master data and transaction data with stable screen flows
+• For FI: Customer/vendor master, GL master, fixed assets (AS91)
+• Approach: Record transaction → map legacy fields → convert → upload
+• Limitation: Sensitive to UI changes; requires re-recording after patches
+
+2. BDC (Batch Data Communication):
+• Developed by ABAP team — simulates user screen transactions
+• For FI: When LSMW BDC recording isn't stable, custom BDC programs are more robust
+• Best for complex transactions with dynamic screen sequences
+
+3. LTMOM / Migration Cockpit (S/4HANA):
+• SAP's recommended tool for S/4HANA migrations
+• Pre-built migration objects for common FI/CO objects (GL accounts, open items, fixed assets)
+• Supports XML/CSV templates, staging tables
+• Better error handling and retry logic than LSMW
+
+4. BAPI/Direct Input:
+• Fastest and most reliable for large volumes
+• BAPI_ACC_DOCUMENT_POST for FI documents
+• Requires ABAP development but bypasses screen recording limitations
+
+OPEN AR INVOICE MIGRATION STEPS:
+1. Extract: Pull open invoices from legacy (customer, amount, currency, document date, baseline date, payment terms, reference)
+2. Map: Map legacy customer numbers to SAP customer numbers
+3. Load: Use F-22 (Customer Invoice) via LSMW BDC, or BAPI_ACC_DOCUMENT_POST
+4. Post to a migration company code or with special migration document type
+5. RECONCILE: Sum of migrated open items = legacy AR sub-ledger total = GL AR balance
+6. Run F.01 (Balance Sheet) and FBL5N (Customer line items) — compare totals to legacy report
+7. Balance confirmation with customers for large balances`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`During an LSMW BDC migration of 5,000 vendor invoices (via FB60 recording), the session runs but 347 records fail silently — they don't appear in the error log, but when you check FBL1N afterward, those vendor balances are missing. The session log shows status "Processed" for all 5,000 records. What are the three most likely reasons records can fail silently in BDC and how do you identify which records failed without comparing all 5,000 manually?`,
+      kw:["BDC session","SM35","error handling mode A vs E","SHDB recording","background processing","batch input session log","missing records","reconciliation","BKPF table","document number range","field length truncation"],
+      ans:`WHY RECORDS FAIL SILENTLY IN BDC:
+
+SILENT FAILURE CAUSE 1 — BDC Error Handling Mode set to "A" (Background/No display with error suppression):
+BDC sessions have an error handling mode: 'A' = background processing where errors are captured in the session log but the session continues. If the log error capture is not being reviewed correctly, errors appear in the session but the session status shows "Processed" (meaning it ran, not that all records succeeded).
+• Diagnose: SM35 → Open the session → Check "Statistics" tab → It will show "Processed: 5000, Errors: 347" even if the overall status says "Processed." The individual error transactions are listed under the "Errors" tab.
+• The real issue: the analyst checked session status (green = "completed") but didn't check the statistics sub-tab.
+
+SILENT FAILURE CAUSE 2 — Field length truncation causing posting failure without message:
+If a legacy field value (e.g., payment reference, text field) exceeds the SAP field length, BDC may truncate the value silently and then the posting fails a validation check (e.g., mandatory field becomes empty after truncation), but the BDC session registers the record as "processed" because the transaction was CALLED — just not successfully completed.
+• Diagnose: Check the error records in SM35 → expand → see the exact screen and field where the BDC stopped. Often it stops on a dynpro that wasn't captured in the recording because it's conditional.
+
+SILENT FAILURE CAUSE 3 — Document number range exhausted or locked:
+If the document number range for the document type used in FB60 was exhausted during the run, subsequent postings fail. If the range is external and numbers were pre-assigned, gaps appear.
+• Diagnose: FBN1 → check the number range for the document type and year — if at maximum, extend the range. Cross-reference document numbers created in BKPF for the migration day.
+
+IDENTIFYING FAILED RECORDS WITHOUT MANUAL COMPARISON:
+1. SM35 → Session details → Statistics → Export error list to spreadsheet → get the legacy reference fields from the BDC input file → cross-reference to find which vendor+invoice combinations failed
+2. Run SE16 → BKPF → filter by document type + posting date + company code → count documents created. If 4,653 instead of 5,000 → 347 failed. Extract document references to identify missing invoices.
+3. Compare legacy reference numbers in BKPF-XBLNR (external reference) to the migration file — the missing XBLNR values are the failed records.`
+    }
+  ]
+},
+
+auth: {
+  title: "Authorizations",
+  bbsiRef: "SAP Technical → Awareness in Authorizations",
+  area: "tech",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical",
+      q:`What are the key authorization objects for SAP FI and CO? Explain how authorization groups work for GL accounts, and what is the difference between structural and functional authorizations in SAP?`,
+      kw:["F_BKPF_BUK","F_BKPF_KOA","F_BKPF_BES","F_SKA1_ALS","K_CCA","authorization group","account group","PFCG","SU24","profile generator","structural authorizations","HR auth","ACTVT 01 02 03"],
+      ans:`KEY FI AUTHORIZATION OBJECTS:
+
+• F_BKPF_BUK: Company code authorization for document posting — controls which company codes a user can post to (ACTVT: 01=create, 02=change, 03=display)
+• F_BKPF_KOA: Account type authorization — controls which account types (D=customer, K=vendor, S=GL, A=asset) a user can post to
+• F_BKPF_BES: Authorization for special GL indicators (noted items, down payments)
+• F_BKPF_GSB: Business area posting authorization
+• F_SKA1_ALS: GL account master authorization — field "ACTVT" + "Authorization Group" (assigned to GL accounts in FS00)
+• F_FAGL_LDR: Ledger posting authorization (S/4HANA — controls which ledgers a user can post to)
+
+KEY CO AUTHORIZATION OBJECTS:
+• K_CCA: Cost centre accounting (cost centre + controlling area + ACTVT)
+• K_CSKS_SET: Cost centre group authorization
+• K_REPO: CO reporting authorization
+
+AUTHORIZATION GROUPS FOR GL ACCOUNTS:
+• Assign authorization groups to GL account masters (FS00 → Control Data → Authorization Group field)
+• In roles (PFCG), restrict F_SKA1_ALS to specific authorization group values
+• This allows you to restrict sensitive accounts (bank accounts, retained earnings) to only certain users, without restricting all GL access
+
+STRUCTURAL vs FUNCTIONAL AUTHORIZATIONS:
+• Functional: Standard SAP authorization objects controlling WHAT transactions can be run and for WHICH objects (company code, cost centre range). Applies to most FI/CO.
+• Structural: Used mainly in HR — controls access to organizational hierarchy (e.g., manager can only see their team's data). Evaluated at runtime against the org structure. Not standard in FI/CO but sometimes used via GRC (SAP Access Control) for controlling area hierarchies.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A user reports they cannot execute transaction FB03 (Display Document) for documents in company code IN01. You run SU53 immediately after the error — it shows GREEN (no failed authorization check). The user clearly gets an error message when running FB03. List four reasons why SU53 shows green but the user still cannot execute, and the exact diagnostic path for each.`,
+      kw:["SU53 timing","ST01 authorization trace","ABAP authority-check","SUIM user analysis","GRC access control","organizational level","interval check","F_BKPF_BUK","SU24 check indicator","manually coded authority-check ABAP"],
+      ans:`This is a classic "SU53 shows green but access denied" problem — one of the most-reported authorization issues on SAP communities.
+
+REASON 1 — SU53 only captures the LAST failed check — not the one that caused the FB03 error:
+SU53 stores only the most recent authorization failure in the session. If the user tried another transaction after FB03 (even by accident — or the system ran a background check), SU53 will show that later authorization, not the FB03 one. The FB03 failure is gone.
+• Diagnostic: Reproduce the error in FB03 → immediately (same session) run SU53 → do NOT navigate elsewhere first.
+
+REASON 2 — The check is in ABAP code, not via standard SU24 objects:
+Some programs perform manual AUTHORITY-CHECK statements for custom objects or specific field values not registered in SU24. SU53 only shows objects registered in the authorization framework. Manual AUTHORITY-CHECK in ABAP code for a non-registered object fails without appearing in SU53.
+• Diagnostic: ST01 (Authorization Trace) → activate for the user → reproduce the FB03 error → stop trace → analyze → ST01 shows ALL authority checks including manual ABAP ones that SU53 misses.
+
+REASON 3 — Organizational level restriction not visible in SU53 display:
+F_BKPF_BUK has organizational level fields (company code). If the user has the object but with company code "0001" and they're trying to access "IN01", SU53 might show the object exists (green) but not highlight that the FIELD VALUES don't match.
+• Diagnostic: SU53 → expand the authorization object → check the actual field values stored vs IN01. Or SUIM → User → Authorizations by authorization object → enter F_BKPF_BUK → verify values.
+
+REASON 4 — GRC Access Control or Firefighter log blocking:
+In environments with SAP GRC, an access enforcer or SOD conflict rule may block transactions at the middleware layer — the authorization EXISTS in the role, but GRC's runtime evaluation blocks the execution. SU53 doesn't know about GRC-level blocks.
+• Diagnostic: Check GRC Access Control → Access Request Management or Emergency Access Management logs for the user. Also check if the user is using a Firefighter ID that has additional restrictions.`
+    }
+  ]
+},
+
+abap: {
+  title: "ABAP Awareness & Debugging",
+  bbsiRef: "SAP Technical → Awareness in ABAP (Debugging)",
+  area: "tech",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical",
+      q:`As a functional consultant, when and how would you use ABAP debugging? Describe the process to activate the debugger for a transaction and what you look for when investigating a posting validation error.`,
+      kw:["SA38 SE38","debugger /h","breakpoint","watchpoint","ABAP debugger","SE16 table browser","SUIM","user exit enhancement spot","BAdI","function module","field symbol","internal table display"],
+      ans:`WHEN A FUNCTIONAL CONSULTANT USES THE DEBUGGER:
+• When an error message gives no useful detail (e.g., "Error in document" without specifics) — trace the exact field causing the failure
+• When a substitution/validation isn't firing as expected — verify the user exit code
+• When a BAdI/enhancement produces wrong results — trace the input/output
+• When debugging user exits in FM POSTING_INTERFACE_DOCUMENT or BKPF/BSEG validation
+
+HOW TO ACTIVATE:
+1. In any transaction: type /h in the command field → Enter → the next action triggers the debugger
+2. Or in SE38/SA38: open the program → click "Debugging" in the Execute menu
+3. In SE24 (class): set breakpoint on a specific method
+4. External breakpoint (for background jobs): Use BREAK-POINT statement or external breakpoint via ABAP debugger → Edit → Breakpoints → External Breakpoints
+
+WHAT TO LOOK FOR IN A POSTING VALIDATION ERROR:
+1. Set a watchpoint on the error variable (SY-MSGID, SY-MSGNO) — debugger stops when it changes
+2. Navigate to the FORM routine or METHOD that sets the error message
+3. Check the values of key fields at that point (document type, company code, amount, account)
+4. Identify which CHECK or IF statement failed
+5. Trace back to understand why the field has an unexpected value
+
+KEY TABLES TO CHECK IN SE16 DURING DEBUGGING:
+• BKPF: Document header (after posting)
+• BSEG: Document line items
+• T001: Company codes
+• SKB1: GL account company code data
+• REGUH: Payment advice (F110)
+
+FUNCTIONAL CONSULTANTS should be comfortable with: reading internal tables, displaying structure contents, and identifying which function module raises a message — they don't need to write code, but must be able to read it.`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client wants to add a validation: when a FI document is posted to a specific GL account (e.g., 400100 - Marketing Expense), the internal order field must be filled. If blank, the posting should be rejected with a meaningful error. You have three technical options: (1) FI Field Validation (OB28), (2) Substitution (OBBH), (3) BAdI FAGL_DERIVE_SUBST. Compare all three precisely — when each is appropriate, the technical trigger point for each, and what a 'false positive' risk looks like for option 1.`,
+      kw:["OB28 validation","OBBH substitution","BAdI FAGL_DERIVE_SUBST","prerequisite","check step","callup point","false positive","user exit","error message","ABAP code","document simulation","field status group alternative"],
+      ans:`OPTION 1 — FI VALIDATION (OB28 → Transaction OB28, Define Validation):
+
+HOW IT WORKS:
+• Callup points: 1 (Document Header), 2 (Line Item), 3 (Complete Document)
+• For this requirement: Callup Point 2 (Line Item) — evaluated for each line item as it's entered
+• Prerequisite: BSEG-HKONT = '400100' (when account = marketing expense)
+• Check: NOT BSEG-AUFNR IS INITIAL (internal order must be filled)
+• If check fails → issue message E (Error) with custom message text
+
+FALSE POSITIVE RISK: At callup point 2, the validation fires per LINE ITEM. If a complex document has the marketing account in line item 1 but the internal order is entered in line item 3 (user fills it later), the validation fails at line item 1 even though the user intends to fill it. The document save would be blocked even though the user is mid-entry.
+• Mitigation: Use Callup Point 3 (Complete Document) — checks after ALL line items are entered. But Callup Point 3 has access to fewer BSEG fields.
+
+OPTION 2 — FI SUBSTITUTION (OBBH):
+
+HOW IT WORKS:
+• Used to automatically FILL fields, not to REJECT postings
+• Cannot be used for rejections — substitution replaces a field value, it doesn't raise an error
+• Use case: Automatically default the internal order if GL = 400100 and the order can be determined by other document attributes (cost centre → order lookup)
+• NOT appropriate for this requirement (validation/rejection purpose)
+
+OPTION 3 — BAdI FAGL_DERIVE_SUBST:
+
+HOW IT WORKS:
+• Enhancement in New GL posting — fires during document simulation (before actual posting)
+• More powerful than OB28: access to full document context, can read database, call function modules
+• Can RAISE an error (RAISE EXCEPTION) to reject the document with custom message
+• Triggered at document save/simulate — avoids the mid-entry false positive of OB28 Callup Point 2
+
+RECOMMENDATION FOR THIS REQUIREMENT:
+Use BAdI FAGL_DERIVE_SUBST — it fires after all line items are entered (at document simulation), has full document context, and can raise a clean error. OB28 is simpler to configure but has the false-positive risk at callup point 2. Field Status Group (OBC4) could also make internal order mandatory for that GL account — the simplest config-only option, but it makes it mandatory for ALL postings to that account including automated ones.`
+    }
+  ]
+},
+
+// ── PROCESS KNOWLEDGE ─────────────────────────────────────────────
+
+process: {
+  title: "End-to-End Accounting Process Knowledge",
+  bbsiRef: "Process Knowledge → Experience in End-to-End Accounting",
+  area: "proc",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Behavioural + Technical",
+      q:`Walk me through a complete Purchase-to-Pay (P2P) or Order-to-Cash (O2C) cycle from a business process perspective, including each step's SAP transaction and the key FI posting at each stage. Where have you seen integration failures between MM/SD and FI?`,
+      kw:["P2P cycle","O2C cycle","purchase requisition","purchase order","goods receipt","MIRO invoice verification","payment F110","sales order VA01","delivery VL01N","billing VF01","revenue recognition","GR/IR","three-way match","account determination"],
+      ans:`P2P (Purchase-to-Pay) CYCLE:
+
+1. Purchase Requisition (ME51N) → No FI posting — internal demand document
+2. Purchase Order (ME21N) → Commitment posted in CO (not FI) — budget control
+3. Goods Receipt (MIGO, MType 101) → FI posting: Dr Inventory/Expense (BSX) / Cr GR/IR (WRX). This is when cost hits the books.
+4. Invoice Receipt (MIRO) → FI posting: Dr GR/IR / Cr Vendor (K). If price difference exists: Dr/Cr Price Diff account (PRD)
+5. Payment Run (F110) → FI posting: Dr Vendor / Cr Bank. Clears the open vendor item.
+
+INTEGRATION FAILURE POINTS:
+• GR/IR mismatch: Invoice quantity ≠ GR quantity → block (MRBR) → causes AP disputes
+• Account determination failure: OBYC not configured for new material type → posting fails at GR with "no account found"
+• Tax code mismatch: MIRO tax code different from PO tax code → system may not auto-propose correct tax
+
+O2C (Order-to-Cash) CYCLE:
+
+1. Sales Order (VA01) → No FI posting; availability check, credit check
+2. Delivery (VL01N) → Goods Issue (PGI): Dr COGS (GBB-VAX) / Cr Inventory (BSX). Revenue not yet recognised.
+3. Billing (VF01) → FI posting: Dr Customer / Cr Revenue. VAT/tax also posted here.
+4. Payment received (F-28) → Dr Bank / Cr Customer. Clears open item.
+
+KEY INTEGRATION POINT: Revenue account determination (VKOA) — maps condition types to GL accounts. If a new pricing condition type is added in SD without updating VKOA, billing fails with "Account determination error."`
+    },
+    {
+      level:"advanced", badge:"Advanced — Technical",
+      q:`A CFO asks you to explain how SAP generates the Cash Flow Statement (indirect method). Which SAP reports support this and what is the key configuration required? Why do many clients find the direct method more accurate, and what would you need to build to support it?`,
+      kw:["cash flow statement","indirect method","direct method","financial statement version","F.01","cash flow item","Special GL","BS vs P&L","liquidity calculation","FSV","FAGLB03","S_ALR_87012271","payment items"],
+      ans:`INDIRECT METHOD — How SAP Supports It:
+
+The indirect method starts with Net Income (P&L) and adjusts for non-cash items and working capital changes to arrive at operating cash flow.
+
+SAP STANDARD APPROACH:
+• Financial Statement Version (FSV): Define a custom FSV that groups BS and P&L accounts into cash flow categories (Operating, Investing, Financing)
+• Transaction S_ALR_87012271 (Cash Flow — Indirect Method): Uses the FSV to compute period-over-period balance changes and calculate adjustments to net income
+• FAGLB03 (New GL Balance Report): Can be used with drilldown to show movements per cash flow category
+
+REQUIRED CONFIGURATION:
+1. Design FSV with cash flow grouping:
+   • Group P&L accounts to start with net income
+   • Group non-cash expense accounts (depreciation, amortisation)
+   • Group working capital BS accounts (receivables, payables, inventory)
+   • Group investing/financing accounts (fixed assets, loans, equity)
+2. Assign each GL account to exactly ONE FSV node
+3. Assign the FSV to the cash flow transaction
+
+INDIRECT METHOD LIMITATION:
+• Relies on period-over-period BALANCE CHANGES — not actual cash flows. FX movements, non-cash reclassifications, and posting errors can corrupt the reconciliation.
+• This is why CFOs and auditors often find it "not granular enough."
+
+DIRECT METHOD — Why More Accurate:
+• Shows actual cash payments and receipts (e.g., "paid to suppliers: X, received from customers: Y")
+• More transparent but requires line-item analysis of bank account postings
+• SAP supports this via bank statement analysis (FF.5) or via custom reports reading BSAK/BSID (cleared items on cash/bank accounts)
+• Building it in SAP: Create a report reading BSAK (cleared vendor items) + BSID (cleared customer items) + BSAS (cleared GL items for bank accounts) filtered by payment-relevant accounts — group by cash flow category using document reason or special GL indicators.
+
+Consulting note: IFRS requires the direct method as preferred — most large clients supplement SAP's indirect output with a direct method reconciliation from the payment run data.`
+    }
+  ]
+},
+
+tax: {
+  title: "Legal Compliance & Taxation",
+  bbsiRef: "Process Knowledge → Legal Compliance, Taxation, Accounting Standards",
+  area: "proc",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain how tax is configured in SAP FI — what is a tax procedure, tax code, and condition type? How does output tax differ from input tax in configuration? Have you configured GST (India) or any country-specific tax in SAP?`,
+      kw:["tax procedure TAXIN TAXEUR","condition type BASB MWAS MWVS","tax code","FTXP","OBQ1 OBQ3","tax jurisdiction","account key","input tax","output tax","CIN Country India Version","GST CGST SGST IGST"],
+      ans:`TAX CONFIGURATION HIERARCHY:
+
+1. TAX PROCEDURE (OBQ1/OBYZ):
+• A condition technique schema that defines the sequence of condition types used for tax calculation
+• TAXIN (India), TAXEUR (Europe), TAXUS (USA) — assigned per country in OY01
+• Contains condition types for base amount, tax rates, and account posting
+
+2. CONDITION TYPES (OBQ1 → Detail of Procedure):
+• BASB: Base amount for tax calculation (usually invoice amount)
+• MWAS: Output VAT condition type (sales tax — customer facing)
+• MWVS: Input VAT condition type (purchase tax — vendor facing)
+• Each condition type has an account key (MW1, VST, etc.) that maps to the actual GL posting
+
+3. TAX CODES (FTXP):
+• Specific rates for the condition types within the tax procedure
+• e.g., Tax code A0 = 0% (exempt), A1 = 18% IGST, I1 = 9% CGST + 9% SGST
+• Assigned to POs, sales orders, invoices at transaction level
+
+4. GL ACCOUNT ASSIGNMENT:
+• OB40: Assign GL accounts to account keys (MW1 = output tax GL, VST = input tax GL)
+• These accounts accumulate tax for the period and are cleared via tax returns
+
+INDIA GST (CIN — Country India Version):
+• CGST (Central GST), SGST (State GST), IGST (Integrated GST) — all configured as separate condition types
+• IGST applies for interstate; CGST+SGST for intrastate
+• Material type, customer/vendor region, and HSN code determine which applies
+• Requires CIN-specific activation and country version configuration in SPRO
+
+BEHAVIOURAL: Strong candidates mention the challenge of configuring reverse charge mechanism for GST, or the complexity of having multiple tax jurisdictions in US (TAXUS with jurisdiction code by ZIP code area).`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client processes a purchase order for services in India. MIRO is posted and the input tax (GST - IGST 18%) is expected to post automatically to the IGST input tax GL account (12500). Instead, the tax amount is embedded in the expense account — the system is adding the tax to the material cost rather than creating a separate tax line item. The tax code is correctly assigned in MIRO. What are the two most common configuration causes for this behavior and the exact fix?`,
+      kw:["non-deductible tax","tax procedure non-deductible flag","FTXP non-deductible","OBQ3 account key","VST vs NVV","tax type input output","material ledger tax","TAXIN condition type NAVS","posting indicator"],
+      ans:`ROOT CAUSE — Tax is Being Treated as Non-Deductible:
+
+In SAP, tax can be configured as either:
+a) DEDUCTIBLE (input tax claimed back from tax authority) → posts to a separate tax GL account (VST account key → GL 12500)
+b) NON-DEDUCTIBLE (tax becomes part of the material cost — cannot be reclaimed) → gets added to the expense/inventory account, not posted separately
+
+CAUSE 1 — Condition type in tax procedure has wrong "Non-deductible" indicator:
+The tax procedure (TAXIN) has a condition type for input GST. In OBQ3 (or the procedure detail), each condition type has a field "Non-deductible" (or "Condition Category"). If this is set to "Non-deductible", the tax amount is absorbed into the base cost instead of being posted to a tax GL account.
+• Diagnose: OBQ1 → TAXIN → Find the IGST input condition type → OBQ3 → check "Non-deductible" flag or condition category
+• Fix: Uncheck "Non-deductible" flag → the condition type will now post to the assigned account key (VST) → which must be mapped to GL 12500 in OB40
+
+CAUSE 2 — Wrong account key assigned to the IGST input condition type:
+Each condition type in the tax procedure is assigned an account key (e.g., VST for deductible input tax, NVV for non-deductible). If the IGST condition type is assigned account key NVV (Non-deductible input tax) instead of VST:
+• NVV-type account keys add the tax to the base cost automatically — no separate GL line
+• Diagnose: OBQ1 → TAXIN → IGST input condition type → check "Account Key" column. If NVV → wrong.
+• Fix: Change account key to VST (or the correct deductible input tax account key). Then OB40 → assign the IGST input tax GL account to VST for company code IN01.
+
+VERIFICATION: After fix, post a test MIRO in quality → check the FI document → confirm a separate line item appears debiting GL 12500 (IGST Input Tax) with credit to vendor. The expense account should now show only the net amount (pre-tax).`
+    }
+  ]
+},
+
+treasury: {
+  title: "Treasury, Forex & Financial Concepts",
+  bbsiRef: "Process Knowledge → Treasury / Forex / Financial Management Ratios",
+  area: "proc",
+  qs: [
+    {
+      level:"intro", badge:"Introductory — Technical + Behavioural",
+      q:`Explain the foreign currency valuation process in SAP (FAGL_FC_VAL). What GL accounts and open items are affected, what is the difference between valuation at exchange rate type "M" vs a custom type, and how does the reversal work at period start?`,
+      kw:["FAGL_FC_VAL","foreign currency valuation","exchange rate type M","OB09","valuation method","realized vs unrealized gain/loss","reverse posting","F.05","balance sheet preparation","open items","GL balances","reversal posting key"],
+      ans:`CONCEPT: At period-end, all foreign currency open items (invoices, payments) and GL account balances in foreign currency must be revalued at the current exchange rate. The difference between the book rate and current rate is posted as unrealised FX gain or loss.
+
+WHAT IS VALUED:
+1. Open items: Customer invoices (FBL5N), vendor invoices (FBL1N) in foreign currency — each line item revalued at the exchange rate on valuation date
+2. GL balances: Bank accounts, intercompany accounts held in foreign currency
+
+CONFIGURATION (OB09 — Define Valuation Methods):
+• Valuation method: determines which exchange rate to use and how to handle gains/losses
+• Exchange rate type: "M" = average rate (official conversion rate maintained in OB08). Custom types (B for buying, G for selling) can be defined for specific valuation purposes
+• Posting: Creates adjustment document — Dr/Cr Unrealised FX Gain/Loss GL account, Cr/Dr Balance Sheet adjustment account (OBA1)
+
+VALUATION METHOD OPTIONS:
+• "Always valuate": Revalue every period regardless of direction
+• "Valuate only if loss": Prudent valuation — only recognise losses (conservative accounting under some GAAP)
+• "Lowest value principle": Only write down (IFRS and HGB compatible)
+
+REVERSAL AT PERIOD START:
+• Valuation documents are automatically flagged for reversal on the first day of the next period
+• This means unrealised gains/losses are reversed at period start → net effect is that only the REALISED gain/loss (when the item is actually paid) flows to P&L permanently
+• Reversal date is set in FAGL_FC_VAL parameters (Reversal Posting Date field)`
+    },
+    {
+      level:"advanced", badge:"Advanced — SDN Scenario",
+      q:`A client runs FAGL_FC_VAL (foreign currency valuation) for an intercompany loan between company code A (USD functional) and company code B (EUR functional). The loan was originally booked at 1 USD = 0.90 EUR. Current rate is 1 USD = 0.95 EUR. After FAGL_FC_VAL runs, company code A shows an FX gain but company code B also shows an FX GAIN on the same transaction — creating a net group gain of double the expected amount on the intercompany account. Finance says this is impossible as one side's gain should offset the other's loss. What causes this "double gain" and how is it resolved?`,
+      kw:["intercompany valuation","company code currency","functional currency","translation vs valuation","FAGL_FC_VAL both sides","intercompany loan","elimination","group currency","OBA1 adjustment account","paired valuation","IHC in-house cash"],
+      ans:`ROOT CAUSE — Different Functional Currencies, Both Sides Valued Independently:
+
+This "double gain" scenario is a well-documented SAP behavior on SCN for intercompany foreign currency instruments.
+
+Company A (USD functional currency) has the loan RECEIVABLE in EUR. When EUR appreciates (0.90 → 0.95), the EUR receivable is worth MORE in USD → FX GAIN for A. ✓ Correct.
+
+Company B (EUR functional currency) has the loan PAYABLE in USD. When EUR appreciates, USD became CHEAPER in EUR terms → the USD payable is worth LESS in EUR → FX GAIN for B also. ✓ Also mathematically correct from B's perspective.
+
+From a CONSOLIDATED group view: Both entities book a gain because both are measuring in their own functional currency. The intercompany elimination (in group consolidation) should net these to zero — but at the LEGAL entity level, both gains are real and valid under IAS 21.
+
+WHY FINANCE IS CONFUSED: They expect one side's gain to exactly offset the other's loss — this is only true when BOTH entities share the same functional currency and the transaction is measured in a THIRD currency. When each entity has a different functional currency, both can show gains or both can show losses on the same transaction depending on which currency moved.
+
+RESOLUTION:
+
+1. CONFIRM CONFIGURATION IS CORRECT: Run FAGL_FC_VAL for both company codes independently — each should use its own functional currency exchange rate. If the configuration is correct, the results are EXPECTED, not a bug.
+
+2. EDUCATE FINANCE: The consolidation process eliminates intercompany balances. At group level, the FX gains on intercompany loans cancel in the elimination journal (group consolidation step in BPC or S/4HANA FC).
+
+3. IF CONFIGURATION IS WRONG (e.g., company B is incorrectly using USD as the valuation currency instead of EUR): Check OB22 (company code currency settings) for both company codes. Verify functional currency and the valuation exchange rate type used in FAGL_FC_VAL run for each company code.
+
+4. For the AUDIT TRAIL: Document the intercompany FX gain in both entities as unrealised, noting they eliminate at consolidation level. This satisfies auditors under IAS 21 requirements.`
+    }
+  ]
+},
+
+// ── SOFT SKILLS ───────────────────────────────────────────────────
+
+softcom: {
+  title: "Communication & Stakeholder Management",
+  bbsiRef: "Soft Skills → Communication",
+  area: "soft",
+  qs: [
+    {
+      level:"behav", badge:"Behavioural — STAR Format",
+      q:`Tell me about a time when a key business stakeholder strongly disagreed with your SAP FI/CO design recommendation. What was the situation, what was at stake, and how did you handle it? What was the outcome?`,
+      kw:["STAR format","situation task action result","business case","data-driven argument","escalation","compromise","change management","documentation","sign-off","relationship management"],
+      ans:`WHAT TO LISTEN FOR (assessor notes):
+
+SITUATION: Should describe a real, specific conflict — not vague. Good sign if they name the stakeholder role (CFO, Finance Director, AP Manager) and the specific design point at issue (e.g., "The CFO wanted a separate AP system, not integrated SAP; I recommended full integration").
+
+TASK: Their responsibility — were they the lead functional consultant? Did they have authority or did they need to influence without authority?
+
+ACTION (most important): 
+• Did they present data, not opinion? (e.g., showed the reconciliation risk of non-integration)
+• Did they involve others appropriately? (e.g., escalated to project manager, involved senior architect)
+• Did they prepare a proper options analysis with pros/cons?
+• Did they listen to the stakeholder's concern and address the ROOT cause rather than the stated position?
+• Did they CHANGE their recommendation when the stakeholder had a valid point? (flexibility = strength, not weakness)
+
+RESULT:
+• Ideally: Agreement reached with a compromise or the business accepted the recommendation after the business case was clear
+• Also acceptable: They were overruled but documented the risk formally (this shows maturity)
+• RED FLAG: "I was right, they were wrong, eventually they came around" — shows arrogance
+• RED FLAG: "I just did what they asked" — shows no backbone, inability to add value
+
+PROBE QUESTIONS:
+"What specifically made you believe your design was correct?"
+"If you had to do it again, would you handle anything differently?"
+"Was there any merit to the stakeholder's position that you initially missed?"`
+    },
+    {
+      level:"behav", badge:"Behavioural — Scenario-Based",
+      q:`You have just discovered, 2 weeks before go-live, that the client's GL account structure was mapped incorrectly — financial statements will not show the correct balance sheet classification for 15 accounts. The CFO does not have deep SAP knowledge. How do you communicate this issue, and what steps do you take immediately?`,
+      kw:["impact assessment","clear communication","non-technical explanation","options and recommendation","escalation","go/no-go decision","remediation plan","time pressure","ownership","transparency"],
+      ans:`WHAT TO LISTEN FOR (assessor notes):
+
+COMMUNICATION APPROACH:
+• Do NOT use technical jargon with the CFO ("FSV nodes", "account type S/P")
+• Frame in business terms: "15 accounts are currently classified as operating expenses when they should be balance sheet items — this means your March 31 balance sheet will be incorrect, which creates a statutory compliance risk."
+• Lead with IMPACT first, then cause, then options
+
+IMMEDIATE STEPS (candidate should mention all):
+1. Verify the finding independently before escalating — don't raise alarm on unconfirmed issue
+2. Quantify the impact: which 15 accounts, what is the financial materiality, which financial statements are affected (P&L, BS)
+3. Prepare options:
+   a) Fix before go-live (reclassify accounts in FSV, re-test) — how long does it take?
+   b) Go live and fix in period 1 (post-go-live adjustment) — what is the risk?
+   c) Delay go-live (last resort)
+4. Escalate to Project Manager and Quality Lead simultaneously
+5. Document in writing — risk log, email trail
+
+WHAT A STRONG CANDIDATE SAYS:
+"I would immediately validate the issue, prepare a one-page impact summary for the CFO with plain language impact and three options with timescales and recommendations, and request a decision meeting within 24 hours. I would recommend Option A (fix before go-live) if the change can be tested in 2-3 days, or Option B with a clear remediation plan and go-live caveat if time is too short."
+
+RED FLAGS:
+• "I would fix it quietly and not tell the CFO" — dishonest
+• "It's not my responsibility, the client signed off the design" — no ownership
+• Inability to describe a non-technical explanation`
+    }
+  ]
+},
+
+softana: {
+  title: "Analytical Ability & Problem Solving",
+  bbsiRef: "Soft Skills → Analytical Ability",
+  area: "soft",
+  qs: [
+    {
+      level:"behav", badge:"Behavioural — STAR Format",
+      q:`Tell me about the most complex production issue you have debugged in SAP FI/CO. Walk me through how you identified the root cause, what made it difficult to find, and how you prevented it from recurring.`,
+      kw:["structured approach","hypothesis testing","data analysis","root cause","regression","logs analysis","stakeholder update","preventive action","documentation","knowledge transfer"],
+      ans:`WHAT TO LISTEN FOR (assessor notes):
+
+COMPLEXITY SIGNAL: A strong candidate picks an issue that was NON-OBVIOUS — not "a field was blank in master data." Good examples:
+• Month-end variance in CO-PA that took 3 days to trace to a derivation rule timing issue
+• Payment run posting to wrong bank account due to a house bank ranking configuration interacting with a specific currency
+• Asset depreciation running for 0 periods due to a fiscal year change timing issue with parallel ledgers
+
+DIAGNOSTIC APPROACH (the most important part):
+• Structured or ad-hoc? Strong candidates describe a STRUCTURED approach: "First I isolated whether it was data or config. I compared a working document to the failing one field by field. I then traced the exact code path using ST01."
+• Did they use proper tools? ST01, SM21, SLG1, SM13 (update records), SCOT (SAP Connect)
+• Did they involve others appropriately? (Basis, ABAP) or try to solve everything alone?
+
+WHAT MADE IT DIFFICULT:
+• Intermittent (only happens sometimes) — good candidates mention regression testing after the fix
+• Timing-dependent (only at month-end) — they had to reproduce in test
+• Involved multiple modules — required cross-functional coordination
+
+PREVENTION:
+• Did they document the root cause and solution in a knowledge base?
+• Did they create a test case to catch regression?
+• Did they raise a config improvement or change request to prevent similar issues?
+
+PROBE: "How did you communicate the status to the business during the 3 days it took to resolve?"
+Strong answer: "I gave twice-daily updates to the finance manager, was transparent about what I'd tried and ruled out, and provided a worst-case and best-case resolution timeline."`
+    },
+    {
+      level:"behav", badge:"Scenario — Analytical Judgment",
+      q:`A client wants to implement CO-PA. You have assessed their needs and determined that both costing-based and account-based COPA would technically work. The client is on S/4HANA 2021. Walk me through the framework you use to make a recommendation, including the three most important factors that would push you toward account-based and two scenarios where costing-based might still be preferable.`,
+      kw:["recommendation framework","account-based COPA","costing-based COPA","S/4HANA direction","reconciliation overhead","custom value fields","margin reporting requirements","data migration","ACDOCA","parallel accounting"],
+      ans:`WHAT TO LISTEN FOR (assessor notes):
+
+RECOMMENDATION FRAMEWORK — does the candidate have a structured approach or just opinion?
+
+A strong candidate mentions:
+
+THREE FACTORS PUSHING TOWARD ACCOUNT-BASED:
+1. Reconciliation requirement: "If the client has SOX compliance or external audit requirements, account-based COPA is always reconciled with FI — zero reconciliation effort. Costing-based requires monthly KEAT reconciliation runs and finance effort."
+2. S/4HANA roadmap alignment: "SAP's investment in reporting tools (SAC, Fiori Margin Analysis) is entirely on account-based. Choosing costing-based means the client is already on a legacy path on a brand new S/4 system."
+3. Parallel accounting: "If the client needs margin analysis by ledger (IFRS vs local GAAP), account-based is the ONLY option — costing-based doesn't support parallel ledgers."
+
+TWO SCENARIOS WHERE COSTING-BASED IS STILL PREFERABLE:
+1. Complex margin reporting requiring custom value field aggregations not representable by cost element structure: "A client wanting to show 'Logistics Cost' as one value field aggregating 5 cost elements — possible in costing-based, requires workaround in account-based."
+2. Large SAP ECC investment in costing-based COPA reports (KE30 reports) that would be expensive to rebuild: "Migration from ECC where the client has 5 years of data and 50 KE30 reports — rebuilding all in account-based has a cost/benefit question."
+
+RED FLAGS:
+• "I would always recommend account-based" without understanding the client's specific reporting needs — technically correct but analytically shallow
+• Cannot explain the reconciliation challenge in costing-based — hasn't dealt with a real month-end close in COPA`
+    }
+  ]
+}
+
+}; // end QB
+
+// ═══════════════════════════════════════════════════════════════════
+// TEMPLATES
+// ═══════════════════════════════════════════════════════════════════
+const TEMPLATES = {
+  fi: {
+    label: "FI-Heavy",
+    desc: "Weighted for Financial Accounting candidates",
+    segments: ["gl","ar","ap","aa","newgl","bank","integration","monthend","datamig","auth","tax","treasury","softcom","softana"]
+  },
+  co: {
+    label: "CO-Heavy",
+    desc: "Weighted for Management Accounting / Controlling candidates",
+    segments: ["cca","io","copa","pc","pca","tp","ps","integration","monthend","datamig","abap","process","treasury","softcom","softana"]
+  },
+  balanced: {
+    label: "FICO-Balanced",
+    desc: "Equal weight across FI and CO for generalist candidates",
+    segments: ["gl","ar","ap","aa","cca","io","copa","pc","integration","monthend","datamig","auth","tax","process","softcom","softana"]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let currentTpl = 'fi';
+const ratings = {};
+const qNotes = {};
+const skipped = {};
+let qCounter = 0;
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════
+function ratingLabel(n) {
+  return ['','Outstanding','Above Average','Acceptable','Unacceptable','Not Worked','Not Evaluated'][n] || '';
+}
+
+function ratingClass(n) {
+  return ['','r1','r2','r3','r4','r5','r6'][n] || '';
+}
+
+function areaTag(area) {
+  const map = { fi:'<span class="sec-tag tag-fi">FI</span>', co:'<span class="sec-tag tag-co">CO</span>', both:'<span class="sec-tag tag-both">FI+CO</span>', tech:'<span class="sec-tag tag-tech">TECHNICAL</span>', proc:'<span class="sec-tag tag-proc">PROCESS</span>', soft:'<span class="sec-tag tag-soft">SOFT SKILLS</span>' };
+  return map[area] || '';
+}
+
+function badgeClass(level) {
+  if(level==='intro') return 'intro-badge';
+  if(level==='advanced') return 'adv-badge';
+  return 'behav-badge';
+}
+
+function renderSections() {
+  qCounter = 0;
+  const segs = TEMPLATES[currentTpl].segments;
+  let html = '';
+  segs.forEach(seg => {
+    const s = QB[seg];
+    if(!s) return;
+    const segRated = s.qs.filter(q => ratings[seg+'_'+s.qs.indexOf(q)] !== undefined);
+    const segTotal = s.qs.filter(q => !skipped[seg+'_'+s.qs.indexOf(q)]).length;
+    html += `<div class="section" id="sec_${seg}">
+      <div class="sec-hdr" onclick="toggleSection('${seg}')">
+        ${areaTag(s.area)}
+        <span class="sec-title">${s.title}</span>
+        <span class="sec-ref">${s.bbsiRef}</span>
+        <span style="font-size:11px;color:#94a3b8;margin-left:12px">${segRated.length}/${segTotal} rated</span>
+        <span class="sec-chevron" id="chev_${seg}">▼</span>
+      </div>
+      <div class="sec-body" id="body_${seg}">`;
+    s.qs.forEach((q, qi) => {
+      qCounter++;
+      const qid = seg+'_'+qi;
+      const r = ratings[qid];
+      const isSkip = skipped[qid];
+      html += `<div class="qcard" id="qcard_${qid}" style="${isSkip?'opacity:.45':''}">
+        <div class="qcard-hdr">
+          <span class="qnum">Q${qCounter}</span>
+          <span class="q-badge ${badgeClass(q.level)}">${q.badge}</span>
+          <div style="flex:1;margin-left:8px">
+            <div class="qtext">${q.q}</div>
+          </div>
+          <button class="skip-btn ${isSkip?'active':''}" onclick="toggleSkip('${qid}')" style="margin-left:10px">${isSkip?'Skipped':'Skip / N/A'}</button>
+        </div>`;
+      if(!isSkip) {
+        html += `<div class="qcard-body">
+          <div class="kw-section">
+            <div class="kw-label">Keywords to listen for</div>
+            <div class="kw-wrap">${q.kw.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+          </div>
+          <div class="ans-section">
+            <div class="ans-label">Model answer & assessor notes</div>
+            <div class="ans-box">${q.ans.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+          </div>
+          <div class="rating-row">
+            <span class="r-label">IBM BBSI Rating:</span>
+            ${[1,2,3,4,5,6].map(n=>`<button class="rb ${r===n?'sel-'+n:''}" onclick="setRating('${qid}',${n})" title="${ratingLabel(n)}">${n}</button>`).join('')}
+            ${r ? `<span class="r-selected-label rp ${ratingClass(r)}">${ratingLabel(r)}</span>` : '<span style="font-size:11px;color:#94a3b8;margin-left:6px">Not rated</span>'}
+          </div>
+          <textarea class="qnotes" placeholder="Notes for this question..." id="note_${qid}" oninput="saveNote('${qid}')">${qNotes[qid]||''}</textarea>
+        </div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('sections').innerHTML = html;
+  updateScores();
+}
+
+function toggleSection(seg) {
+  const body = document.getElementById('body_'+seg);
+  const chev = document.getElementById('chev_'+seg);
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function setRating(qid, n) {
+  if(ratings[qid] === n) { delete ratings[qid]; }
+  else { ratings[qid] = n; }
+  renderSections();
+}
+
+function toggleSkip(qid) {
+  skipped[qid] = !skipped[qid];
+  if(skipped[qid]) delete ratings[qid];
+  renderSections();
+}
+
+function saveNote(qid) {
+  const el = document.getElementById('note_'+qid);
+  if(el) qNotes[qid] = el.value;
+}
+
+function updateScores() {
+  const segs = TEMPLATES[currentTpl].segments;
+  let allQ=[], fiQ=[], coQ=[], techQ=[];
+  segs.forEach(seg => {
+    const s = QB[seg];
+    if(!s) return;
+    s.qs.forEach((q,qi) => {
+      const qid = seg+'_'+qi;
+      if(skipped[qid]) return;
+      const entry = {qid, area:s.area, r:ratings[qid]};
+      allQ.push(entry);
+      if(s.area==='fi'||s.area==='both') fiQ.push(entry);
+      if(s.area==='co'||s.area==='both') coQ.push(entry);
+      if(s.area==='tech'||s.area==='proc') techQ.push(entry);
+    });
+  });
+  const rated = allQ.filter(e=>e.r);
+  const avg = r => r.length ? (r.reduce((s,e)=>s+e.r,0)/r.length).toFixed(2) : '—';
+  const lbl = v => { if(v==='—') return '—'; const n=parseFloat(v); return n<=1.5?'Outstanding':n<=2.5?'Above Avg':n<=3.5?'Acceptable':n<=4.5?'Unacceptable':n<=5.5?'Not Worked':'Mixed'; };
+  const fiRated=fiQ.filter(e=>e.r), coRated=coQ.filter(e=>e.r), techRated=techQ.filter(e=>e.r);
+  document.getElementById('sAsked').textContent = rated.length;
+  document.getElementById('sTotal').textContent = 'of '+allQ.length;
+  const avgVal = avg(rated);
+  document.getElementById('sAvg').textContent = avgVal;
+  document.getElementById('sAvgLbl').textContent = lbl(avgVal);
+  document.getElementById('sFI').textContent = avg(fiRated);
+  document.getElementById('sCO').textContent = avg(coRated);
+  document.getElementById('sTech').textContent = avg(techRated);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GUIDANCE
+// ═══════════════════════════════════════════════════════════════════
+function generateGuidance() {
+  const segs = TEMPLATES[currentTpl].segments;
+  const name = document.getElementById('mName').value || 'Candidate';
+  const pos = document.getElementById('mRole').value;
+  let allRated=[], strong=[], weak=[], notWorked=[];
+  segs.forEach(seg => {
+    const s = QB[seg];
+    if(!s) return;
+    s.qs.forEach((q,qi) => {
+      const qid = seg+'_'+qi;
+      if(skipped[qid]||!ratings[qid]) return;
+      const r = ratings[qid];
+      allRated.push({label:`${s.title} — Q${qi+1}`,r,note:qNotes[qid]||''});
+      if(r<=2) strong.push(`  + ${s.title} (Q${qi+1}) — Rated: ${ratingLabel(r)}`);
+      if(r===4) weak.push(`  - ${s.title} (Q${qi+1}) — Rated: ${ratingLabel(r)}`);
+      if(r===5) notWorked.push(`  ! ${s.title} (Q${qi+1}) — No prior exposure`);
+    });
+  });
+  if(allRated.length < 5) { document.getElementById('guidanceBox').textContent = 'Please rate at least 5 questions to generate the BBSI assessment summary.'; return; }
+  const avg = allRated.reduce((s,e)=>s+e.r,0)/allRated.length;
+  const overall = avg<=1.5?'Outstanding':avg<=2.5?'Above Average':avg<=3.5?'Acceptable':avg<=4?'Unacceptable':avg<=5?'Not Worked (multiple gaps)':'Mixed';
+  let rec = '';
+  if(avg<=2.5) rec = 'RECOMMEND: Strong candidate. Proceed to offer stage. Suitable for consulting engagements.';
+  else if(avg<=3.5) rec = 'CONDITIONAL: Meets baseline. Suitable for support engagements or junior consulting. Consider second-round technical interview for gap areas.';
+  else if(avg<=4.5) rec = 'HOLD: Below bar on multiple competencies. Significant development required. Do not proceed at this time.';
+  else rec = 'DO NOT PROCEED: Candidate does not meet minimum competency threshold for IBM SAP FICO.';
+
+  let g = `IBM BBSI — SAP FI/CO ASSESSMENT SUMMARY\n${'═'.repeat(50)}\n`;
+  g += `Candidate   : ${name}\n`;
+  g += `Position    : ${pos}\n`;
+  g += `Template    : ${TEMPLATES[currentTpl].label}\n`;
+  g += `Questions   : ${allRated.length} rated\n`;
+  g += `Overall Avg : ${avg.toFixed(2)} — ${overall}\n\n`;
+  g += `STRENGTHS (Rated 1 = Outstanding, 2 = Above Average)\n${'─'.repeat(50)}\n`;
+  g += strong.length ? strong.join('\n') : '  None rated as Outstanding or Above Average';
+  g += `\n\nDEVELOPMENT GAPS (Rated 4 = Unacceptable)\n${'─'.repeat(50)}\n`;
+  g += weak.length ? weak.join('\n') : '  No Unacceptable ratings';
+  g += `\n\nNO PRIOR EXPOSURE (Rated 5 = Not Worked)\n${'─'.repeat(50)}\n`;
+  g += notWorked.length ? notWorked.join('\n') : '  None';
+  g += `\n\nRECOMMENDATION\n${'─'.repeat(50)}\n  ${rec}`;
+  const notes = document.getElementById('overallNotes').value;
+  if(notes) g += `\n\nINTERVIEWER OBSERVATIONS\n${'─'.repeat(50)}\n  ${notes}`;
+  g += `\n\n${'─'.repeat(50)}\nNote: IBM hiring decision is not final until reference checks are complete.`;
+  document.getElementById('guidanceBox').textContent = g;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════════════
+function exportJSON() {
+  const segs = TEMPLATES[currentTpl].segments;
+  const questions = [];
+  segs.forEach(seg => {
+    const s = QB[seg];
+    if(!s) return;
+    s.qs.forEach((q,qi) => {
+      const qid = seg+'_'+qi;
+      questions.push({
+        segment:s.title, bbsiRef:s.bbsiRef, area:s.area,
+        type:q.level, question:q.q,
+        keywords:q.kw,
+        rating:ratings[qid]||null,
+        ratingLabel:ratings[qid]?ratingLabel(ratings[qid]):null,
+        skipped:!!skipped[qid],
+        notes:qNotes[qid]||''
+      });
+    });
+  });
+  const data = {
+    meta:{
+      candidate:document.getElementById('mName').value,
+      role:document.getElementById('mRole').value,
+      category:document.getElementById('mCat').value,
+      mode:document.getElementById('mMode').value,
+      interviewer:document.getElementById('mInterviewer').value,
+      empId:document.getElementById('mEmpId').value,
+      date:document.getElementById('mDate').value,
+      sapExperience:document.getElementById('mYears').value,
+      template:TEMPLATES[currentTpl].label,
+      exportedAt:new Date().toISOString()
+    },
+    summary:{
+      questionsRated:questions.filter(q=>q.rating&&!q.skipped).length,
+      questionsSkipped:questions.filter(q=>q.skipped).length,
+      averageRating:questions.filter(q=>q.rating).length ? parseFloat((questions.filter(q=>q.rating).reduce((s,q)=>s+q.rating,0)/questions.filter(q=>q.rating).length).toFixed(2)) : null
+    },
+    finalRating:{
+      overallNotes:document.getElementById('overallNotes').value,
+      overallRating:document.getElementById('overallRating').value,
+      recommendation:document.querySelector('input[name="rec"]:checked')?.value||null,
+      recommendedFor:{consulting:document.getElementById('recConsulting').checked,support:document.getElementById('recSupport').checked},
+      rejectionReason:document.querySelector('input[name="rej"]:checked')?.value||null
+    },
+    questions
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `IBM_BBSI_FICO_${(data.meta.candidate||'candidate').replace(/\s+/g,'_')}_${(data.meta.date||new Date().toISOString().slice(0,10))}.json`;
+  a.click();
+}
+
+function clearAll() {
+  if(!confirm('Clear ALL ratings, notes and skips for this template?')) return;
+  Object.keys(ratings).forEach(k=>delete ratings[k]);
+  Object.keys(qNotes).forEach(k=>delete qNotes[k]);
+  Object.keys(skipped).forEach(k=>delete skipped[k]);
+  document.getElementById('overallNotes').value='';
+  document.getElementById('guidanceBox').textContent='Rate at least 5 questions and click "Generate BBSI Summary" to produce structured assessment text.';
+  renderSections();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('[data-tpl]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentTpl = btn.dataset.tpl;
+    document.querySelectorAll('[data-tpl]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSections();
+  });
+});
+document.getElementById('mDate').value = new Date().toISOString().slice(0,10);
+
+// Open first section by default
+function openFirst() {
+  const segs = TEMPLATES[currentTpl].segments;
+  if(segs[0]) {
+    const body = document.getElementById('body_'+segs[0]);
+    const chev = document.getElementById('chev_'+segs[0]);
+    if(body) { body.classList.add('open'); chev.classList.add('open'); }
+  }
+}
+
+renderSections();
+openFirst();
+</script>
+</body>
+</html>
